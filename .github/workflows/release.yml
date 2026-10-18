@@ -30,12 +30,7 @@ jobs:
       matrix:
         platform:
           - amd64
-          - arm64
-          - armv7
-          - armv6
-          - 386
-          - armv5
-          - s390x
+          
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -97,9 +92,7 @@ jobs:
           # Stamp the commit into per-commit (dev channel) builds only; tagged
           # stable releases stay unstamped so config.IsDevBuild() returns false.
           LDFLAGS="-w -s -linkmode external -extldflags '-static'"
-          if [[ "$GITHUB_REF" != refs/tags/* ]]; then
-            LDFLAGS="$LDFLAGS -X github.com/mhsanaei/3x-ui/v3/internal/config.buildCommit=${GITHUB_SHA::8} -X github.com/mhsanaei/3x-ui/v3/internal/config.buildDate=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          fi
+         
           go build -buildvcs=true -ldflags "$LDFLAGS" -o xui-release -v .
           file xui-release
           ldd xui-release || echo "Static binary confirmed"
