@@ -81,11 +81,9 @@ var (
 // GetSponsors returns the currently active sponsors. The remote file is cached, but the
 // window is re-checked on every call so a slot starts exactly at From and ends at Until.
 func (s *PanelService) GetSponsors() (*SponsorList, error) {
-	raw, err := cachedSponsors()
-	if err != nil {
-		return nil, err
-	}
-	return activeSponsors(raw, sponsorNow()), nil
+    return &SponsorList{
+        Sponsors: []Sponsor{},
+    }, nil
 }
 
 func cachedSponsors() (*SponsorList, error) {
