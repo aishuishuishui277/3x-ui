@@ -1,0 +1,74 @@
+[
+  {
+    "version": "v3.10.0",
+    "commit": "74c3cc38821cabd66ad316ea562851422d0b0063",
+    "files": {
+      "internal/web/service/panel/sponsor.go": "fa11c49fb9033cdd1dc7a25c150f4dfda988b29803b528fbfeeefa13cdf06dfa",
+      "internal/web/service/panel/sponsor_test.go": "7e7affc2084055b3b6d9761a3fff7477a2d5ab2c4535b36475f3af25e6224b88",
+      "frontend/src/api/queries/useSponsorsQuery.ts": "ecace055bced670727c6584cabd9fe0fa682cd05b34234ff6a297a23af675a0b",
+      "frontend/src/components/sponsor/SponsorSlot.tsx": "de71227c3371b6b997314a842e5a087fe6c6bbf64ce734858cf9d4fbce103d7c",
+      "frontend/src/pages/sponsors/SponsorsPage.tsx": "2843f78ae4bd12f56a6e1bae5f16f4697b18407452d461bf72cfdaf604327e6f",
+      "frontend/src/layouts/AppSidebar.tsx": "e4f60bb1523ec13a7477e2e73ab2cc8702cf15831c98f9f7d9c5fed5c80930bc"
+    },
+    "inventory": [
+      "frontend/src/api/queries/useSponsorsQuery.ts",
+      "frontend/src/api/queryKeys.ts",
+      "frontend/src/components/command-palette/CommandPalette.tsx",
+      "frontend/src/components/sponsor/SponsorCard.stories.tsx",
+      "frontend/src/components/sponsor/SponsorCard.tsx",
+      "frontend/src/components/sponsor/SponsorSlot.tsx",
+      "frontend/src/generated/examples.ts",
+      "frontend/src/generated/schemas.ts",
+      "frontend/src/generated/types.ts",
+      "frontend/src/generated/zod.ts",
+      "frontend/src/hooks/usePageTitle.ts",
+      "frontend/src/layouts/AppSidebar.tsx",
+      "frontend/src/lib/sponsors.ts",
+      "frontend/src/pages/api-docs/endpoints.ts",
+      "frontend/src/pages/index/IndexPage.tsx",
+      "frontend/src/pages/login/LoginPage.tsx",
+      "frontend/src/pages/sponsors/SponsorsPage.tsx",
+      "frontend/src/routes.tsx",
+      "frontend/src/test/sponsors.test.tsx",
+      "internal/web/controller/index.go",
+      "internal/web/service/client_bulk.go",
+      "internal/web/service/panel/sponsor.go"
+    ]
+  },
+  {
+    "version": "v3.10.2",
+    "commit": "608ef4e4010bf83e2e78328e08f77efc051ad4d7",
+    "files": {
+      "internal/web/service/panel/sponsor.go": "69a09ce2f94773a37bf2a364677e21889b028f964e273d48b28839191b6f8655",
+      "internal/web/service/panel/sponsor_test.go": "a7d5f7514d5033dd774985f4da8d5d94d2e07a52820bf9306dd79c245fa6580e",
+      "frontend/src/api/queries/useSponsorsQuery.ts": "ecace055bced670727c6584cabd9fe0fa682cd05b34234ff6a297a23af675a0b",
+      "frontend/src/components/sponsor/SponsorSlot.tsx": "7cac62e0f7e0e5d067f5870aa22c1da2bb5a0f34a4bb551f17cd71e8629c110d",
+      "frontend/src/pages/sponsors/SponsorsPage.tsx": "88932977cb8585ac40a7a38371f1982c19fadb491b4a94bcf85ef4cc70615c08",
+      "frontend/src/layouts/AppSidebar.tsx": "49d8825288ad94c90821f54b7ca6a1165041c8b3dc6a9a93dcd0a41f0a096c8b"
+    },
+    "inventory": [
+      "frontend/src/api/queries/useSponsorsQuery.ts",
+      "frontend/src/api/queryKeys.ts",
+      "frontend/src/components/command-palette/CommandPalette.tsx",
+      "frontend/src/components/sponsor/SponsorCard.stories.tsx",
+      "frontend/src/components/sponsor/SponsorCard.tsx",
+      "frontend/src/components/sponsor/SponsorSlot.tsx",
+      "frontend/src/generated/examples.ts",
+      "frontend/src/generated/schemas.ts",
+      "frontend/src/generated/types.ts",
+      "frontend/src/generated/zod.ts",
+      "frontend/src/hooks/usePageTitle.ts",
+      "frontend/src/layouts/AppSidebar.tsx",
+      "frontend/src/lib/sponsors.ts",
+      "frontend/src/pages/api-docs/endpoints.ts",
+      "frontend/src/pages/index/IndexPage.tsx",
+      "frontend/src/pages/login/LoginPage.tsx",
+      "frontend/src/pages/sponsors/SponsorsPage.tsx",
+      "frontend/src/routes.tsx",
+      "frontend/src/test/sponsors.test.tsx",
+      "internal/web/controller/index.go",
+      "internal/web/service/client_bulk.go",
+      "internal/web/service/panel/sponsor.go"
+    ]
+  }
+]

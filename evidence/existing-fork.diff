@@ -1,0 +1,48 @@
+diff --git a/.github/workflows/release.yml b/.github/workflows/release.yml
+index 2e277f0..cdf90a9 100644
+--- a/.github/workflows/release.yml
++++ b/.github/workflows/release.yml
+@@ -30,12 +30,7 @@ jobs:
+       matrix:
+         platform:
+           - amd64
+-          - arm64
+-          - armv7
+-          - armv6
+-          - 386
+-          - armv5
+-          - s390x
++          
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout repository
+@@ -97,9 +92,7 @@ jobs:
+           # Stamp the commit into per-commit (dev channel) builds only; tagged
+           # stable releases stay unstamped so config.IsDevBuild() returns false.
+           LDFLAGS="-w -s -linkmode external -extldflags '-static'"
+-          if [[ "$GITHUB_REF" != refs/tags/* ]]; then
+-            LDFLAGS="$LDFLAGS -X github.com/mhsanaei/3x-ui/v3/internal/config.buildCommit=${GITHUB_SHA::8} -X github.com/mhsanaei/3x-ui/v3/internal/config.buildDate=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+-          fi
++         
+           go build -buildvcs=true -ldflags "$LDFLAGS" -o xui-release -v .
+           file xui-release
+           ldd xui-release || echo "Static binary confirmed"
+diff --git a/internal/web/service/panel/sponsor.go b/internal/web/service/panel/sponsor.go
+index 6f9b27a..0993bee 100644
+--- a/internal/web/service/panel/sponsor.go
++++ b/internal/web/service/panel/sponsor.go
+@@ -81,11 +81,9 @@ var (
+ // GetSponsors returns the currently active sponsors. The remote file is cached, but the
+ // window is re-checked on every call so a slot starts exactly at From and ends at Until.
+ func (s *PanelService) GetSponsors() (*SponsorList, error) {
+-	raw, err := cachedSponsors()
+-	if err != nil {
+-		return nil, err
+-	}
+-	return activeSponsors(raw, sponsorNow()), nil
++    return &SponsorList{
++        Sponsors: []Sponsor{},
++    }, nil
+ }
+ 
+ func cachedSponsors() (*SponsorList, error) {

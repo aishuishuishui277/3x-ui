@@ -1,0 +1,1 @@
+actionlint 1.7.12: passed (shellcheck/pyflakes disabled); Bash install.sh syntax: passed; PowerShell parser: passed; Python compileall: passed. Linux build and live VPS: pending.

@@ -1,0 +1,137 @@
+name: No sponsor stable AMD64
+on:
+  schedule:
+    - cron: '23 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      upstream_tag:
+        description: '留空追踪最新正式版；也可填 v3.10.0 或 v3.10.2'
+        type: string
+        default: ''
+  push:
+    paths: ['maintenance/**', 'tests/**', '.github/workflows/no-sponsor.yml', 'server/**']
+permissions:
+  contents: read
+concurrency:
+  group: no-sponsor-release
+  cancel-in-progress: false
+jobs:
+  activity:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      - name: Record scheduled activity once every 28 days
+        run: python3 maintenance/keepalive.py
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    outputs:
+      build: ${{ steps.select.outputs.build }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Maintenance regression tests
+        run: python3 -m unittest discover -s tests -v
+      - name: Resolve stable release
+        id: select
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_TAG: ${{ inputs.upstream_tag }}
+        run: python3 maintenance/track.py
+      - name: Check and apply reviewed patch
+        if: steps.select.outputs.build == 'true'
+        run: python3 maintenance/patch.py upstream
+      - uses: actions/setup-go@v7
+        if: steps.select.outputs.build == 'true'
+        with:
+          go-version-file: upstream/go.mod
+          cache-dependency-path: upstream/go.sum
+      - uses: actions/setup-node@v7
+        if: steps.select.outputs.build == 'true'
+        with:
+          node-version-file: upstream/.nvmrc
+          cache: npm
+          cache-dependency-path: upstream/frontend/package-lock.json
+      - name: Frontend install, typecheck and build
+        if: steps.select.outputs.build == 'true'
+        working-directory: upstream/frontend
+        run: |
+          npm ci
+          npm run typecheck
+          npm test -- --project unit --project components
+          npm run build
+      - name: Go tests and static Linux AMD64 build
+        if: steps.select.outputs.build == 'true'
+        working-directory: upstream
+        env:
+          CGO_ENABLED: '1'
+          GOOS: linux
+          GOARCH: amd64
+          CC: musl-gcc
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y musl-tools
+          go mod verify
+          gofmt -w internal/web/service/panel/sponsor.go internal/web/service/panel/no_sponsor_test.go
+          go test -timeout 15m ./...
+          go build -trimpath -buildvcs=false -ldflags "-w -s -linkmode external -extldflags '-static'" -o ../panel .
+          file ../panel | tee ../binary-info.txt
+          readelf -h ../panel | grep 'Advanced Micro Devices X86-64'
+          if readelf -l ../panel | grep -q INTERP; then echo 'Unexpected dynamic loader'; exit 1; fi
+          test "v$(../panel -v)" = "${{ steps.select.outputs.tag }}"
+      - name: Package verified binary and official pinned Xray
+        if: steps.select.outputs.build == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 maintenance/package.py
+      - name: Isolated panel HTTP smoke test
+        if: steps.select.outputs.build == 'true'
+        run: python3 maintenance/smoke.py
+      - name: Export build artifacts
+        if: steps.select.outputs.build == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: no-sponsor-${{ steps.select.outputs.tag }}-amd64
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 30
+      - name: Failure summary
+        if: failure()
+        run: |
+          echo '### 构建停止，未发布可安装 Release。请查看失败步骤；补丁指纹改变时需要重新审查源码。' >> "$GITHUB_STEP_SUMMARY"
+  publish:
+    needs: build
+    if: needs.build.outputs.build == 'true'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        id: download
+        with:
+          pattern: no-sponsor-*-amd64
+          merge-multiple: true
+          path: dist
+      - name: Publish only a complete tested build
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd dist
+          sha256sum -c SHA256SUMS
+          tag=$(python3 -c 'import json; print(json.load(open("manifest.json"))["release_tag"])')
+          # A draft never appears to the updater. Retry can replace draft assets.
+          if gh release view "$tag" --json isDraft -q .isDraft > draft.txt 2>/dev/null; then
+            test "$(cat draft.txt)" = true
+          else
+            gh release create "$tag" --draft --target "$GITHUB_SHA" --title "$tag · Linux AMD64 · no sponsor" --notes-file RELEASE-NOTES.md
+          fi
+          gh release upload "$tag" x-ui-panel-linux-amd64.tar.gz source-patched.tar.gz manifest.json SHA256SUMS patch-report.json validation.json --clobber
+          gh release edit "$tag" --draft=false --latest=false
+          echo "### 已发布 $tag；VPS 仍需手工批准更新。" >> "$GITHUB_STEP_SUMMARY"

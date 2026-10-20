@@ -1,0 +1,27 @@
+test_backup_includes_live_wal (test_maintenance.SafetyTests.test_backup_includes_live_wal) ... ok
+test_corrupted_download_rejected (test_maintenance.SafetyTests.test_corrupted_download_rejected) ... ok
+test_explicit_core_update (test_maintenance.SafetyTests.test_explicit_core_update) ... Rollback backup: 20261020T025112Z-before-v3.10.2-ns1-812a9c
+Update passed local checks. Test the Reality client externally; rollback: 20261020T025112Z-before-v3.10.2-ns1-812a9c
+ok
+test_failed_health_restores_binary_wal_database_and_config (test_maintenance.SafetyTests.test_failed_health_restores_binary_wal_database_and_config) ... Rollback backup: 20261020T025113Z-before-v3.10.2-ns1-02ef9f
+ok
+test_interrupt_restores_old_state (test_maintenance.SafetyTests.test_interrupt_restores_old_state) ... Rollback backup: 20261020T025113Z-before-v3.10.2-ns1-028865
+ok
+test_new_sponsor_entry_point_stops_patch (test_maintenance.SafetyTests.test_new_sponsor_entry_point_stops_patch) ... ok
+test_offline_rollback_restores_even_corrupted_current_database (test_maintenance.SafetyTests.test_offline_rollback_restores_even_corrupted_current_database) ... Restored: 20261020T025113Z-known-good-3059ed ; previous state saved: rescue-20261020T025113Z-5c8c5a
+ok
+test_panel_only_keeps_xray (test_maintenance.SafetyTests.test_panel_only_keeps_xray) ... Rollback backup: 20261020T025113Z-before-v3.10.2-ns1-30ea3a
+Update passed local checks. Test the Reality client externally; rollback: 20261020T025113Z-before-v3.10.2-ns1-30ea3a
+ok
+test_patch_rejects_unknown_source_without_mutation (test_maintenance.SafetyTests.test_patch_rejects_unknown_source_without_mutation) ... ok
+test_stable_tag_filter (test_maintenance.SafetyTests.test_stable_tag_filter) ... ok
+test_symlink_rejected (test_maintenance.SafetyTests.test_symlink_rejected) ... ok
+test_traversal_rejected (test_maintenance.SafetyTests.test_traversal_rejected) ... ok
+test_unapproved_archive_never_stops_service (test_maintenance.SafetyTests.test_unapproved_archive_never_stops_service) ... ok
+test_valid_amd64_package (test_maintenance.SafetyTests.test_valid_amd64_package) ... ok
+test_wrong_arch_manifest_rejected (test_maintenance.SafetyTests.test_wrong_arch_manifest_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.961s
+
+OK

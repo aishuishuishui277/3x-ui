@@ -1,0 +1,21 @@
+{
+  "profiles": [
+    "v3.10.0"
+  ],
+  "before": {
+    "internal/web/service/panel/sponsor.go": "fa11c49fb9033cdd1dc7a25c150f4dfda988b29803b528fbfeeefa13cdf06dfa",
+    "internal/web/service/panel/sponsor_test.go": "7e7affc2084055b3b6d9761a3fff7477a2d5ab2c4535b36475f3af25e6224b88",
+    "frontend/src/api/queries/useSponsorsQuery.ts": "ecace055bced670727c6584cabd9fe0fa682cd05b34234ff6a297a23af675a0b",
+    "frontend/src/components/sponsor/SponsorSlot.tsx": "de71227c3371b6b997314a842e5a087fe6c6bbf64ce734858cf9d4fbce103d7c",
+    "frontend/src/pages/sponsors/SponsorsPage.tsx": "2843f78ae4bd12f56a6e1bae5f16f4697b18407452d461bf72cfdaf604327e6f",
+    "frontend/src/layouts/AppSidebar.tsx": "e4f60bb1523ec13a7477e2e73ab2cc8702cf15831c98f9f7d9c5fed5c80930bc"
+  },
+  "after": {
+    "internal/web/service/panel/sponsor.go": "ca9f158d35fdd3c7cf0da1c7a88f7bf52f1aa9d9d81b1843e55f6d45c56c9ea8",
+    "internal/web/service/panel/sponsor_test.go": "f059834fd8b6238a5411ab48f3ee2c6ce659d80227f95c111be82b1a9c96a82b",
+    "frontend/src/api/queries/useSponsorsQuery.ts": "27bde11f052f815d7dfa406a65b091cb29ac6667f63f4549131a3e61ffeb64d0",
+    "frontend/src/components/sponsor/SponsorSlot.tsx": "86ba7044018838a75834798192d785f64ec8dcd3e5351c80f1312122cfdbbb1a",
+    "frontend/src/pages/sponsors/SponsorsPage.tsx": "6fbfdc3c5ec293938381e2863e47765f3382e8ffa20e671048d90d9b2ab95cbc",
+    "frontend/src/layouts/AppSidebar.tsx": "e540c5e0615cb755fc0f3deb96fb89edfefcdc7c7e752cccd84246b0525ac0aa"
+  }
+}
