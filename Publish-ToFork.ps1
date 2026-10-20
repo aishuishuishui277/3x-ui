@@ -23,7 +23,7 @@ Push-Location $checkout
 try {
     # New orphan branch contains tooling only. Old main and no-sponsor branch survive.
     Checked 'git' @('switch', '--orphan', $branch)
-    foreach ($name in @('.github', '.gitattributes', '.gitignore', 'LICENSE', 'maintenance', 'server', 'tests', 'evidence', 'README.zh-CN.md', 'VERIFICATION.md', 'INSTALL-NOW.md', 'Publish-ToFork.ps1')) {
+    foreach ($name in @('.github', '.gitattributes', '.gitignore', 'LICENSE', 'maintenance', 'server', 'tests', 'evidence', 'README.zh-CN.md', 'XRAY-UPDATE.zh-CN.md', 'VERIFICATION.md', 'INSTALL-NOW.md', 'Publish-ToFork.ps1')) {
         Copy-Item -LiteralPath (Join-Path $PSScriptRoot $name) -Destination $checkout -Recurse -Force
     }
     Checked 'git' @('add', '.')

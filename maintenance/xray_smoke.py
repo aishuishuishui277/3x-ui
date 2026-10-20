@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 import re
 import socket
+import ssl
 import subprocess
 import tempfile
 import threading
@@ -48,13 +49,25 @@ def main():
                 '-keyout', str(d / 'key.pem'), '-out', str(d / 'cert.pem'), '-days', '1',
                 '-subj', '/CN=reality.test'], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             tls_port, server_port = port(), port()
-            launch(['openssl', 's_server', '-accept', f'127.0.0.1:{tls_port}', '-key', d / 'key.pem',
-                    '-cert', d / 'cert.pem', '-tls1_3', '-groups', 'X25519', '-alpn', 'h2,http/1.1', '-www'], 'tls', tls_port)
+            ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+            ctx.minimum_version = ctx.maximum_version = ssl.TLSVersion.TLSv1_3
+            ctx.set_ecdh_curve('X25519'); ctx.set_alpn_protocols(['h2','http/1.1'])
+            ctx.load_cert_chain(d / 'cert.pem', d / 'key.pem')
+            class TargetHandler(http.server.SimpleHTTPRequestHandler):
+                def setup(self):
+                    self.request.settimeout(10)
+                    self.request = ctx.wrap_socket(self.request, server_side=True)
+                    super().setup()
+            # REALITY probes and clients open concurrent TLS connections.
+            # A single-connection openssl s_server can block these probes.
+            target_http = http.server.ThreadingHTTPServer(('127.0.0.1', tls_port),
+                functools.partial(TargetHandler, directory=str(d)))
+            threading.Thread(target=target_http.serve_forever, daemon=True).start()
             key = subprocess.check_output([str(candidate), 'x25519'], text=True)
             private = re.search(r'Private\s*[Kk]ey:\s*(\S+)', key)[1]
             public = re.search(r'(?:Password(?: \(PublicKey\))?|Public\s*[Kk]ey):\s*(\S+)', key)[1]
             ident = str(uuid.uuid4()); sid = '0123456789abcdef'
-            server = dict(log={'loglevel':'warning'}, inbounds=[dict(listen='127.0.0.1', port=server_port,
+            server = dict(log={'loglevel':'debug'}, inbounds=[dict(listen='127.0.0.1', port=server_port,
                 protocol='vless', settings={'clients':[{'id':ident,'flow':'xtls-rprx-vision'}], 'decryption':'none'},
                 streamSettings={'network':'tcp', 'security':'reality', 'realitySettings':{
                     'target':f'127.0.0.1:{tls_port}', 'serverNames':['reality.test'], 'privateKey':private, 'shortIds':[sid]}})],
@@ -64,7 +77,7 @@ def main():
             launch([candidate, 'run', '-config', config], 'server', server_port)
             for label, binary in (('baseline-client', baseline), ('candidate-client', candidate)):
                 socks = port()
-                client = dict(log={'loglevel':'warning'}, inbounds=[{'listen':'127.0.0.1','port':socks,
+                client = dict(log={'loglevel':'debug'}, inbounds=[{'listen':'127.0.0.1','port':socks,
                     'protocol':'socks','settings':{'auth':'noauth','udp':False}}], outbounds=[dict(protocol='vless',
                     settings={'vnext':[{'address':'127.0.0.1','port':server_port,'users':[{'id':ident,
                         'flow':'xtls-rprx-vision','encryption':'none'}]}]},
@@ -89,6 +102,7 @@ def main():
                     try: p.wait(timeout=10)
                     except subprocess.TimeoutExpired: p.kill(); p.wait()
             for f in handles: f.close()
+            if 'target_http' in locals(): target_http.shutdown(); target_http.server_close()
             httpd.shutdown(); httpd.server_close()
     dist = Path('xray-dist')
     (dist / 'xray-validation.json').write_text(json.dumps(dict(official_sha256='passed', elf_amd64='passed',

@@ -4,7 +4,7 @@
 
 **以后由 GitHub 自动跟踪正式版、检查补丁、编译和发布；VPS 下载并校验构建包，由你批准具体包后更新。无需再次 Fork、手工改源代码、手机编译或 Termux SCP。**
 
-GitHub 阶段已获授权并落地：`maintenance-no-sponsor` 分支已上传且设为默认分支，`v3.10.0-ns1` 和 `v3.10.2-ns1` 均已通过真实 Linux 构建、全部测试和隔离启动检查，并公开发布。VPS 尚未连接或修改。详细记录见 `VERIFICATION.md`。首次服务器更新和真实 Reality 客户端验收仍需单独批准；原版 3.10.0 用户可先使用 3.10.0-ns1 做同版本去广告，具体命令见 `INSTALL-NOW.md`。
+GitHub 阶段已获授权并落地：`maintenance-no-sponsor` 分支已上传且设为默认分支，`v3.10.0-ns1` 和 `v3.10.2-ns1` 均已通过真实 Linux 构建、全部测试和隔离启动检查，并公开发布。用户于 2026-10-20 确认 VPS 已部署 3.10.2、Xray 26.10.10，Reality 可连接；助手未登录 VPS。构建记录见 `VERIFICATION.md`。原版 3.10.0 用户的首次操作见 `INSTALL-NOW.md`；本机现有部署的核心扩展见 `XRAY-UPDATE.zh-CN.md`。
 
 ## 已从真实源码确认的内容
 
@@ -95,7 +95,7 @@ sudo git clone --depth 1 --branch maintenance-no-sponsor \
 sudo bash /opt/3x-ui-maintenance/server/install.sh
 ```
 
-只安装 `/usr/local/sbin/xui-maintain` 和私有备份目录，不覆盖面板，也不停服。可以先审阅 `/opt/3x-ui-maintenance/server/xui-maintain.py`，并把克隆提交与已批准的维护提交核对。
+只安装 `/usr/local/sbin/xui-maintain`、`/usr/local/sbin/xray-maintain` 和私有备份目录，不覆盖面板，也不停服。可以先审阅 `/opt/3x-ui-maintenance/server/`，并把克隆提交与已批准的维护提交核对。
 
 用你实际的本机面板入口初始化，包含端口、秘密路径、末尾 `/`。例如面板在本机 HTTP 2053、入口路径是 `/my-panel/`：
 

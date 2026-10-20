@@ -60,6 +60,7 @@ def main():
         t.add('tests', arcname='tests', filter=source_filter)
         t.add('.github/workflows/no-sponsor.yml', arcname='maintenance-workflow.yml')
         t.add('README.zh-CN.md', arcname='README.zh-CN.md')
+        t.add('XRAY-UPDATE.zh-CN.md', arcname='XRAY-UPDATE.zh-CN.md')
     (dist / 'RELEASE-NOTES.md').write_text(f'''自动去赞助构建 {selected['release_tag']}
 
 上游正式标签: {tag}
