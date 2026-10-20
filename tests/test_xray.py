@@ -67,6 +67,24 @@ class CoreTests(unittest.TestCase):
         with patch.object(C.M, 'STATE', self.d), patch.object(C.M, 'systemctl') as ctl:
             with self.assertRaisesRegex(ValueError, 'Unfinished'): C.no_pending()
             ctl.assert_not_called()
+    def test_panel_bundle_cannot_downgrade_newer_core(self):
+        # A panel upgrade may carry the old 26.10.10 bundle after a separate
+        # core upgrade. Reject that downgrade even with the explicit bundle flag.
+        from test_maintenance import SafetyTests, M as P
+        fixture = SafetyTests(); fixture.d = self.d
+        tag = fixture.package()
+        state = self.d / 'state'; stage = state / 'staged' / tag; stage.mkdir(parents=True)
+        for n in (P.ASSET, 'manifest.json', 'SHA256SUMS'): shutil.copy2(self.d / n, stage / n)
+        panel = self.d / 'panel'; panel.mkdir(); (panel / 'x-ui').write_bytes(b'panel')
+        core = panel / 'bin'; core.mkdir(); (core / 'xray-linux-amd64').write_bytes(b'newer core')
+        c = dict(panel_dir=str(panel),bin_dir=str(core),db_dir=str(self.d),unit='x-ui.service')
+        def run(*args, **kw):
+            if 'version' in args: return 'Xray ' + ('26.10.17' if Path(args[0]) == core / 'xray-linux-amd64' else '26.10.10')
+            return '3.10.0' if Path(args[0]) == panel / 'x-ui' else '3.10.2'
+        with patch.object(P, 'STATE', state), patch.object(P, 'preflight'), patch.object(P, 'run', side_effect=run), \
+             patch.object(P, 'reality_signature', return_value=('unchanged',1)), patch.object(P, 'systemctl') as ctl:
+            with self.assertRaisesRegex(ValueError, 'downgrade'): P.update(c, tag, P.sha(stage / P.ASSET), True)
+            ctl.assert_not_called()
     def transaction(self, failure=False, approval=True, preview=True, bad_config=False, downgrade=False):
         tag, elf = self.package()
         state = self.d / 'state'; state.mkdir()

@@ -391,6 +391,12 @@ def update(c, tag, approved, with_core):
         if run(payload / 'x-ui/x-ui', '-v').lstrip('v') != target:
             raise ValueError('Panel version mismatch')
         if with_core:
+            bundled = re.search(r'^Xray (\d+)\.(\d+)\.(\d+)\b', run(payload / 'x-ui/bin/xray-linux-amd64', 'version'))
+            existing = re.search(r'^Xray (\d+)\.(\d+)\.(\d+)\b', run(core_path, 'version'))
+            if not bundled or not existing:
+                raise ValueError('Unrecognized bundled/current Xray version')
+            if tuple(map(int, bundled.groups())) < tuple(map(int, existing.groups())):
+                raise ValueError('Bundled Xray would downgrade the existing core; omit --with-bundled-xray')
             env = dict(os.environ, XRAY_LOCATION_ASSET=c['bin_dir'])
             run(payload / 'x-ui/bin/xray-linux-amd64', 'run', '-test', '-config', Path(c['bin_dir']) / 'config.json', env=env)
         backup = None

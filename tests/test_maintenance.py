@@ -120,6 +120,7 @@ class SafetyTests(unittest.TestCase):
             return '3.10.2' if 'payload' in str(args[0]) else '3.10.0'
         # Staged executable is under a random temp directory, so inspect path.
         def cmd(*args, **kw):
+            if 'version' in args: return 'Xray 26.10.10'
             if str(args[0]).endswith('/x-ui') or str(args[0]).endswith('\\x-ui'):
                 return '3.10.0' if Path(args[0]) == panel / 'x-ui' else '3.10.2'
             return command(*args, **kw)
