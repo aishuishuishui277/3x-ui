@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-20",
+  "release": "https://github.com/aishuishuishui277/3x-ui/releases/tag/xray-v26.10.17-r1",
+  "release_tag": "xray-v26.10.17-r1",
+  "upstream_prerelease": true,
+  "package_sha256": "51d76443b7e94c8a5317fbfac19766530efdfb6699dc4dbe5e99cbd877924c02",
+  "candidate_xray_sha256": "6771b2b2700dee175357024738ad579de1c3f2c49eec0257e737d5aa38d12fed",
+  "official_archive_sha256": "ecdd54eccd24c4c21a8f00968e7dbf7f5996da92383d2321170b560dc4a95158",
+  "traffic_ci": "https://github.com/aishuishuishui277/3x-ui/actions/runs/39370348040",
+  "traffic_tests": [
+    "26.10.10 client -> 26.10.17 server REALITY+Vision HTTP200 and exact payload",
+    "26.10.17 client -> 26.10.17 server REALITY+Vision HTTP200 and exact payload"
+  ],
+  "public_download_validation": "accepted by server/xray-maintain.py validate",
+  "user_reported_baseline": "3x-ui 3.10.2 / Xray26.10.10 / Reality connection working",
+  "vps_access_by_assistant": false,
+  "core_deployment_by_assistant": false,
+  "natural_schedule_observed": false,
+  "local_maintenance_tests": 28,
+  "linux_maintenance_tests": 28,
+  "final_code_commit": "fc21b13dd6437a10c267db4b3a4d8c0c032ad959",
+  "final_core_regression_ci": "https://github.com/aishuishuishui277/3x-ui/actions/runs/39370574886",
+  "panel_regression_ci": "https://github.com/aishuishuishui277/3x-ui/actions/runs/39370574872"
+}

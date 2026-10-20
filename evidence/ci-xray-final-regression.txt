@@ -1,0 +1,5 @@
+2026-10-20T04:37:49.1330890Z Ran 28 tests in 0.217s
+2026-10-20T04:37:49.1332754Z OK
+2026-10-20T04:37:49.1335911Z Core update passed local checks. Verify Reality from your client. Rollback: 20261020T043749Z-core-73d0d8
+2026-10-20T04:37:49.1341239Z Restored core: 20261020T043749Z-core-73d0d8 ; previous binary saved: core-rescue-475c39ada31b
+2026-10-20T04:37:53.1156214Z No new eligible official Xray release: preview xray-v26.10.17-r1

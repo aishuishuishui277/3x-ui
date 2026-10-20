@@ -1,0 +1,44 @@
+test_backup_includes_live_wal (test_maintenance.SafetyTests.test_backup_includes_live_wal) ... ok
+test_corrupted_download_rejected (test_maintenance.SafetyTests.test_corrupted_download_rejected) ... ok
+Rollback backup: 20261020T043701Z-before-v3.10.2-ns1-195014
+test_explicit_core_update (test_maintenance.SafetyTests.test_explicit_core_update) ... ok
+Update passed local checks. Test the Reality client externally; rollback: 20261020T043701Z-before-v3.10.2-ns1-195014
+Rollback backup: 20261020T043701Z-before-v3.10.2-ns1-3aeea3
+test_failed_health_restores_binary_wal_database_and_config (test_maintenance.SafetyTests.test_failed_health_restores_binary_wal_database_and_config) ... ok
+Rollback backup: 20261020T043702Z-before-v3.10.2-ns1-eb72f2
+test_interrupt_restores_old_state (test_maintenance.SafetyTests.test_interrupt_restores_old_state) ... ok
+test_new_sponsor_entry_point_stops_patch (test_maintenance.SafetyTests.test_new_sponsor_entry_point_stops_patch) ... ok
+test_offline_rollback_restores_even_corrupted_current_database (test_maintenance.SafetyTests.test_offline_rollback_restores_even_corrupted_current_database) ... ok
+Restored: 20261020T043702Z-known-good-13a46c ; previous state saved: rescue-20261020T043702Z-205ca9
+Rollback backup: 20261020T043702Z-before-v3.10.2-ns1-ff9bbd
+test_panel_only_keeps_xray (test_maintenance.SafetyTests.test_panel_only_keeps_xray) ... ok
+test_patch_rejects_unknown_source_without_mutation (test_maintenance.SafetyTests.test_patch_rejects_unknown_source_without_mutation) ... ok
+test_shared_system_directory_rejected_before_service_stop (test_maintenance.SafetyTests.test_shared_system_directory_rejected_before_service_stop) ... ok
+test_stable_tag_filter (test_maintenance.SafetyTests.test_stable_tag_filter) ... ok
+test_symlink_rejected (test_maintenance.SafetyTests.test_symlink_rejected) ... ok
+test_traversal_rejected (test_maintenance.SafetyTests.test_traversal_rejected) ... ok
+test_unapproved_archive_never_stops_service (test_maintenance.SafetyTests.test_unapproved_archive_never_stops_service) ... ok
+test_valid_amd64_package (test_maintenance.SafetyTests.test_valid_amd64_package) ... ok
+test_wrong_arch_manifest_rejected (test_maintenance.SafetyTests.test_wrong_arch_manifest_rejected) ... ok
+test_actual_official_digest_format_and_duplicates (test_xray.CoreTests.test_actual_official_digest_format_and_duplicates) ... ok
+test_archive_traversal_symlink_duplicate_rejected (test_xray.CoreTests.test_archive_traversal_symlink_duplicate_rejected) ... ok
+test_archive_valid_and_tamper_rejected (test_xray.CoreTests.test_archive_valid_and_tamper_rejected) ... ok
+test_equal_or_newer_core_never_downgraded (test_xray.CoreTests.test_equal_or_newer_core_never_downgraded) ... ok
+Update passed local checks. Test the Reality client externally; rollback: 20261020T043702Z-before-v3.10.2-ns1-ff9bbd
+Core rollback backup: 20261020T043702Z-core-e16df2
+test_failure_recovers_core_without_restoring_sqlite (test_xray.CoreTests.test_failure_recovers_core_without_restoring_sqlite) ... ok
+test_incompatible_config_rejected_before_stop (test_xray.CoreTests.test_incompatible_config_rejected_before_stop) ... ok
+test_panel_bundle_cannot_downgrade_newer_core (test_xray.CoreTests.test_panel_bundle_cannot_downgrade_newer_core) ... ok
+test_pending_panel_transaction_blocks_core (test_xray.CoreTests.test_pending_panel_transaction_blocks_core) ... ok
+test_prerelease_needs_explicit_flag (test_xray.CoreTests.test_prerelease_needs_explicit_flag) ... ok
+test_release_channels_do_not_downgrade_baseline (test_xray.CoreTests.test_release_channels_do_not_downgrade_baseline) ... ok
+Core rollback backup: 20261020T043703Z-core-f35569
+test_success_and_rollback_preserve_live_wal_traffic (test_xray.CoreTests.test_success_and_rollback_preserve_live_wal_traffic) ... ok
+test_unapproved_hash_does_not_stop (test_xray.CoreTests.test_unapproved_hash_does_not_stop) ... ok
+
+----------------------------------------------------------------------
+Ran 28 tests in 1.544s
+
+OK
+Core update passed local checks. Verify Reality from your client. Rollback: 20261020T043703Z-core-f35569
+Restored core: 20261020T043703Z-core-f35569 ; previous binary saved: core-rescue-b4a0d38832f3

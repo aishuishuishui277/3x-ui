@@ -1,0 +1,22 @@
+[
+  {
+    "name": "xray-linux-amd64.tar.gz",
+    "digest": "sha256:51d76443b7e94c8a5317fbfac19766530efdfb6699dc4dbe5e99cbd877924c02",
+    "size": 13499307
+  },
+  {
+    "name": "xray-manifest.json",
+    "digest": "sha256:25b00071f44eb039cce8855c6b6ef0b8cc28cf5cc264d717fb641fd9341d5cd5",
+    "size": 746
+  },
+  {
+    "name": "XRAY-SHA256SUMS",
+    "digest": "sha256:08c40c1b7dc41e13bf7fd726353e3db99a4fe53aea241ff27662eeddcc27df78",
+    "size": 262
+  },
+  {
+    "name": "xray-validation.json",
+    "digest": "sha256:29e49822689b050560251236fffb7966dda4726eb00a9302fd6bd3b60e16c231",
+    "size": 347
+  }
+]

@@ -20,6 +20,22 @@
 
 ## 已安装原方案的 VPS：只需升级维护工具一次
 
+如果你沿用原方案的 `/opt/3x-ui-maintenance` 克隆目录，直接执行：
+
+```bash
+sudo git -C /opt/3x-ui-maintenance pull --ff-only
+sudo bash /opt/3x-ui-maintenance/server/install.sh
+sudo xui-maintain inspect
+sudo xray-maintain check --channel preview
+```
+
+如果 pull 报错或目录不存在，停止这条路径，改用下面的完整源码包安装方法，不执行来源不明的已有文件。完整源码包可从本说明所在 GitHub 分支页面的 Code → Download ZIP 下载；也可在 VPS 使用 git clone（目录需尚不存在）：
+
+```bash
+sudo git clone --depth 1 --branch maintenance-no-sponsor \
+  https://github.com/aishuishuishui277/3x-ui.git /opt/3x-ui-maintenance
+```
+
 下载本仓库 **maintenance-no-sponsor 分支的完整源码包**，解压后进入目录执行：
 
 ```bash
@@ -46,11 +62,15 @@ sudo xray-maintain check xray-v26.10.17-r1 --channel preview
 
 检查会显示准确版本、官方预发布标记、包 SHA256 和完整的批准命令。复制该次输出的命令才执行安装。每个新包都需批准自己的 SHA256，不能用旧哈希或 `latest` 批准未来未知版本。若核心已相同或更新，停止并保留当前核心。
 
-批准命令形如（SHA256 使用检查命令的真实输出）：
+首个候选包 `26.10.17-r1` 已公开发布，并下载后再次通过服务器包验证器。它的准确 SHA256 如下；先运行上面的 check 核对一致，只有决定升级时才执行：
 
 ```bash
-sudo xray-maintain update xray-v26.10.17-r1 --approve 检查输出的64位SHA256 --allow-prerelease
+sudo xray-maintain update xray-v26.10.17-r1 \
+  --approve 51d76443b7e94c8a5317fbfac19766530efdfb6699dc4dbe5e99cbd877924c02 \
+  --allow-prerelease
 ```
+
+下一版不能沿用这一哈希，使用下一次 check 输出的命令。发布包和验证报告见 [xray-v26.10.17-r1](https://github.com/aishuishuishui277/3x-ui/releases/tag/xray-v26.10.17-r1)。
 
 执行时再次核对完整包/报告、现场生成配置和当前地理数据；配置不兼容时在停服务前拒绝。通过后短暂停止整个 x-ui 服务，备份旧核心，原子替换，启动原服务，并检查面板健康、Xray 子进程、SQLite 完整性及 Reality 节点配置指纹。默认等待 15 秒后再检健康。此操作会短暂中断连接。
 

@@ -62,3 +62,23 @@ Release：https://github.com/aishuishuishui277/3x-ui/releases/tag/v3.10.0-ns1
 - 手机或其他原客户端实际连接 Reality、访问目标网站、出口与订阅行为。
 
 本包只移除 3x-ui 赞助展示，不解决前述 v0.9.1 客户端连接故障，也没有声称改善线路丢包或增加 Hy2 支持。
+
+## Xray 自动维护扩展验收（2026-10-20）
+
+用户现已确认：VPS 已部署无赞助面板 3.10.2、Xray 26.10.10，Reality 节点可正常连接。这是用户报告的线上实测结果；助手没有登录 VPS，也没有替换线上核心。
+
+新增 `.github/workflows/xray.yml` 与原面板工作流共存，配置每 6 小时追踪官方核心；正式和预发布渠道分开，最低基线 26.10.10。官方最新正式 API 当前返回较旧的 26.3.27；用户当前核心与新候选 26.10.17 都是官方预发布版。没有把预发布版重新称为正式版，也不会自动降级现场核心。
+
+完整发布运行：[39370348040](https://github.com/aishuishuishui277/3x-ui/actions/runs/39370348040)，维护提交 `790286e3d74d2fce97a34a6ba22cad705689cdf1`：
+
+- Linux 维护测试通过；官方 ZIP 与 `.dgst` 两个 GitHub 资产 SHA256、ZIP 的官方 SHA2-256、二进制 ELF AMD64 和版本匹配均通过。
+- 26.10.10 客户端 → 26.10.17 服务端、26.10.17 客户端 → 26.10.17 服务端，两组真实 VLESS + REALITY + Vision 传输均返回 HTTP 200，接收内容与随机测试标记完全一致。
+- 发布为保留官方预发布标记的 [xray-v26.10.17-r1](https://github.com/aishuishuishui277/3x-ui/releases/tag/xray-v26.10.17-r1)，4 个资产均已公开。包 SHA256：`51d76443b7e94c8a5317fbfac19766530efdfb6699dc4dbe5e99cbd877924c02`。
+- 下载公开包、manifest、验证报告和校验清单后，再次通过 `server/xray-maintain.py` 的真实包验证器。该步骤没有执行下载的 Linux 二进制，也未连接 VPS。
+- 独立核心脚本共享原配置、锁和事务标记；故障与手工回滚只恢复核心文件，SQLite WAL 中更新后的流量值保持。维护测试另覆盖面板随包旧核心被拒绝降级现场新核心。
+
+最初测试曾被两道实际问题拦下：核心默认私有目标拦截命中了 CI 本地 HTTP 目标，测试配置增加了仅该临时端口的 allow；单个 Actions 产物下载路径与多产物目录不同，发布脚本已兼容两者，并增加发布后的资产检查。没有改变 VPS 配置或跳过 REALITY 传输测试。
+
+维护工具目前本地及 Linux 均有 28 项测试通过：[核心最终回归](https://github.com/aishuishuishui277/3x-ui/actions/runs/39370574886)、[原面板工作流回归](https://github.com/aishuishuishui277/3x-ui/actions/runs/39370574872)，代码提交 `fc21b13dd6437a10c267db4b3a4d8c0c032ad959`。详情见 `evidence/xray-acceptance.json`、`evidence/xray-local-tests.txt`、`evidence/ci-xray-26.10.17.txt`。两条工作流均识别现有已发布版本，跳过重复构建、传输测试和资产发布，没有改写现有公开 Release。
+
+未验证范围：助手没有在用户 VPS 执行新核心脚本，尚未实测用户外网到 26.10.17 的连接；自然 schedule 与 VPS 可选检查 timer 尚未等到首次自然执行。现场部署后仍需用户用原 Reality 客户端验收。
