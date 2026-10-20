@@ -462,6 +462,10 @@ def main():
         args = parser.parse_args()
         if args.command == 'init': init(args); return
         c = load_config()
+        if (STATE / 'pending.json').exists():
+            pending_kind = json.loads((STATE / 'pending.json').read_text()).get('kind')
+            if pending_kind == 'core' and args.command in ('update', 'rollback', 'recover'):
+                raise ValueError('Unfinished core transaction: use xray-maintain recover --approve-rollback')
         def interrupt(signum, frame): raise KeyboardInterrupt('Interrupted; attempting recovery')
         signal.signal(signal.SIGTERM, interrupt)
         if args.command == 'inspect':

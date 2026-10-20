@@ -1,0 +1,89 @@
+name: Xray official AMD64 candidates
+on:
+  schedule:
+    - cron: '47 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      xray_tag:
+        description: '留空按渠道自动选择；指定预发布标签只在 preview 任务构建'
+        type: string
+        default: ''
+  push:
+    paths: ['maintenance/xray*.py', 'server/**', 'tests/test_xray.py', '.github/workflows/xray.yml']
+permissions:
+  contents: read
+concurrency:
+  group: xray-candidates
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        channel: [stable, preview]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Maintenance regression tests
+        run: python3 -m unittest discover -s tests -v
+      - name: Select and verify official XTLS core
+        id: select
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHANNEL: ${{ matrix.channel }}
+          XRAY_TAG: ${{ matrix.channel == 'preview' && inputs.xray_tag || '' }}
+        run: python3 maintenance/xray_release.py
+      - name: REALITY Vision actual loopback traffic with baseline and candidate clients
+        if: steps.select.outputs.build == 'true'
+        run: python3 maintenance/xray_smoke.py
+      - uses: actions/upload-artifact@v7
+        if: steps.select.outputs.build == 'true'
+        with:
+          name: xray-${{ matrix.channel }}-${{ steps.select.outputs.tag }}
+          path: xray-dist/*
+          if-no-files-found: error
+          retention-days: 30
+      - name: Record result
+        if: always()
+        env:
+          CHANNEL: ${{ matrix.channel }}
+          RESULT: ${{ job.status }}
+        run: echo "### Xray $CHANNEL $RESULT；只生成候选包，VPS 更新仍需批准。" >> "$GITHUB_STEP_SUMMARY"
+  publish:
+    needs: verify
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: xray-*
+          path: candidates
+      - name: Publish tested core candidates; preserve upstream prerelease flag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ ! -d candidates ]; then exit 0; fi
+          for dir in candidates/*; do
+            [ -d "$dir" ] || continue
+            (
+              cd "$dir"
+              sha256sum -c XRAY-SHA256SUMS
+              tag=$(python3 -c 'import json; print(json.load(open("xray-manifest.json"))["release_tag"])')
+              preview=$(python3 -c 'import json; print(str(json.load(open("xray-manifest.json"))["upstream_prerelease"]).lower())')
+              if gh release view "$tag" --json isDraft -q .isDraft > existing.txt 2>/dev/null; then
+                if [ "$(cat existing.txt)" = false ]; then exit 0; fi
+              else
+                printf '%s\n' 'XTLS 官方 Linux AMD64 核心，未修改。校验官方 SHA256、ELF、版本，以及 26.10.10 和候选客户端的 REALITY+Vision 本地传输。未验证你的 VPS 外部连接。' '核心单独批准部署；不更新面板、数据库或地理数据。详见默认分支 XRAY-UPDATE.zh-CN.md。' > notes.md
+                gh release create "$tag" --draft --target "$GITHUB_SHA" --prerelease="$preview" --title "$tag · official Xray AMD64" --notes-file notes.md
+              fi
+              gh release upload "$tag" xray-linux-amd64.tar.gz xray-manifest.json xray-validation.json XRAY-SHA256SUMS --clobber
+              gh release edit "$tag" --draft=false --latest=false --prerelease="$preview"
+            )
+          done
