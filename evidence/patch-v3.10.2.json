@@ -10,12 +10,40 @@
     "frontend/src/pages/sponsors/SponsorsPage.tsx": "88932977cb8585ac40a7a38371f1982c19fadb491b4a94bcf85ef4cc70615c08",
     "frontend/src/layouts/AppSidebar.tsx": "49d8825288ad94c90821f54b7ca6a1165041c8b3dc6a9a93dcd0a41f0a096c8b"
   },
+  "translation_before": {
+    "internal/web/translation/ar-EG.json": "6a94596af04ba60aca3a4e7da50683336d566728ecd19c3b388a6c59978508cc",
+    "internal/web/translation/en-US.json": "4434619a5756feafa08bcc6e255039ead927549faf6f74c00487c7636d682291",
+    "internal/web/translation/es-ES.json": "7495e9ffaf32711b44a52a88e87658cd4ccaa5b4b0ddba3574cbceb9d506cb22",
+    "internal/web/translation/fa-IR.json": "c3820dab39c76ceb8ac4af6edbb3eb46437fea190cf54e2ede1db2fbb941ba33",
+    "internal/web/translation/id-ID.json": "8b356eb3f1edfea2f9cbfe195d6d04d9b4d038389242c5c8d70e8537e1b65d43",
+    "internal/web/translation/ja-JP.json": "9b466b20ad8a1226e56c59d7c0dbf9717f8ab27f4e7110c5fccd90285a42d3d0",
+    "internal/web/translation/pt-BR.json": "5869e769312182dcc3464444dccec56789f67753d619823f205ea5358dd8fa49",
+    "internal/web/translation/ru-RU.json": "00b9c109c27e7a318d8c1cae2f3b653b6664f2efc86b915e9a38e4e86b97940c",
+    "internal/web/translation/tr-TR.json": "24df6f3246d4642ba9f45acc79319603d91c827e4801f60d4ab7723ae2c3e63e",
+    "internal/web/translation/uk-UA.json": "20aa5f477ac3d88409568816cc8cfa6cbb20a14f31c09fc00c290642dd3bb1ce",
+    "internal/web/translation/vi-VN.json": "d96c525ac1fa34df374c7c2a52ad270ea37584867f2548837bd29f717d1592e4",
+    "internal/web/translation/zh-CN.json": "2ede6ce95745884d9dbb6e178ebf5086b6a7c688a3bcc9d747e65a3fcf49e544",
+    "internal/web/translation/zh-TW.json": "c99fd7a41385328faef31e06509ca142e1dd67291bbe828668b30aa90bb3922e"
+  },
   "after": {
     "internal/web/service/panel/sponsor.go": "e636c9771d58210d10bc1829b2568a541797ca6c56ffa59f7bf50ecd4351caea",
     "internal/web/service/panel/sponsor_test.go": "d967d8c605019f700795d9ef17faaf98b708d0d608c3a6a1777e11d1313c51bf",
     "frontend/src/api/queries/useSponsorsQuery.ts": "27bde11f052f815d7dfa406a65b091cb29ac6667f63f4549131a3e61ffeb64d0",
     "frontend/src/components/sponsor/SponsorSlot.tsx": "86ba7044018838a75834798192d785f64ec8dcd3e5351c80f1312122cfdbbb1a",
     "frontend/src/pages/sponsors/SponsorsPage.tsx": "6fbfdc3c5ec293938381e2863e47765f3382e8ffa20e671048d90d9b2ab95cbc",
-    "frontend/src/layouts/AppSidebar.tsx": "6e47c64f7cd4eda2ed750c37b3ed3e939df92f5d804068841ef574565f7180e9"
+    "frontend/src/layouts/AppSidebar.tsx": "6e47c64f7cd4eda2ed750c37b3ed3e939df92f5d804068841ef574565f7180e9",
+    "internal/web/translation/ar-EG.json": "d4b38fc0b7de8cfd6e6c1cf6c07cc68543c55e273bc9510df827a5a93fb6e6ca",
+    "internal/web/translation/en-US.json": "734a7d71326806f8c3429c3d4081fe5b06c93a53cc7866bf282c4aee8445ac09",
+    "internal/web/translation/es-ES.json": "2b08f02cf69075ff85761853f0b3454778d878a5e02ec404f28e97481afc76cd",
+    "internal/web/translation/fa-IR.json": "e6ba8d001c88f50ee5f7494f840cb737d2855fc20addccdb6486397a4cd5f8e7",
+    "internal/web/translation/id-ID.json": "d2e5d382eebca6e7e68ab590150eac62dcf71ca8ade64b45a583b8c5896d8903",
+    "internal/web/translation/ja-JP.json": "3fc6041c2d02d1d2f17b200a1a5c9edc56035b60f0cae992e1f7d6628edd1405",
+    "internal/web/translation/pt-BR.json": "1b8978772e093019026b196308f9854364b16d0298bda1a59ded6e2724fe5157",
+    "internal/web/translation/ru-RU.json": "731e6ff0ca0463c7c4edd4502f6a906adf6214e1b57c4f8a5fe430ceff595932",
+    "internal/web/translation/tr-TR.json": "099b6f1f44c86f0de9542c4ca7bcb7c43c76639374ab750754ac7d57d7aef854",
+    "internal/web/translation/uk-UA.json": "ac5ed971c7296cc65acfbdafd50ca8abf9906d1268058ccdbfef29a4637564ab",
+    "internal/web/translation/vi-VN.json": "88f6fb04316f9ce66655138127d3fb966ba834e163faa1ec2cd79c1bcc0d0b8c",
+    "internal/web/translation/zh-CN.json": "e91565d6059d8d0f37afe417d0c37b438cbf45dea3b514d94eceb7913fcab295",
+    "internal/web/translation/zh-TW.json": "ed0a6845d0f96b0ca0279053484c0631921ddbc399788b68e8ca973e2109958e"
   }
 }

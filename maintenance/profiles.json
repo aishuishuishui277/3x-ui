@@ -33,7 +33,22 @@
       "internal/web/controller/index.go",
       "internal/web/service/client_bulk.go",
       "internal/web/service/panel/sponsor.go"
-    ]
+    ],
+    "translations": {
+      "internal/web/translation/ar-EG.json": "32e31c3152b35d2b105c2ddb4152c269debc1964f77731c9782358bee2b0a577",
+      "internal/web/translation/en-US.json": "a435dd9a064cb1af073e8d40872bd279e72ad787124aea557a178624ac6d4eec",
+      "internal/web/translation/es-ES.json": "f4a224129eb948887ecac9210ec90f26a469e15164f51aa43944992f3f8943ea",
+      "internal/web/translation/fa-IR.json": "b61f648b4c6604b4dbf7422c57aea337c483f923397593575cd7886de243a1c4",
+      "internal/web/translation/id-ID.json": "0477890999bf81fea820617536588627c454d3d59f9bc440b0d683227912ab44",
+      "internal/web/translation/ja-JP.json": "d32c4df8d75164ed5855791c223da40617d8cdd36a27ccb5a304b5ef1606d1d3",
+      "internal/web/translation/pt-BR.json": "41656deea6592c64e68e13fc7e94585ab006ea0fdd0d8b57c5aa305874deb670",
+      "internal/web/translation/ru-RU.json": "93e121b79ed635a6ebbf597b9830c808ba3ac054f7b196d0b1dea348d499c3f3",
+      "internal/web/translation/tr-TR.json": "54ed6a64b07f11dc1a65ae9811e3c85dfe4b93900180b54c39e6ff25d0237172",
+      "internal/web/translation/uk-UA.json": "ecf0a5cd185a1d9a34830ba660cf744459d983134836265a02f2944b5f2ecc8d",
+      "internal/web/translation/vi-VN.json": "3052c138118451aee055a87686014d3217bda3a4b107fa584d25d8aab35883da",
+      "internal/web/translation/zh-CN.json": "3bd6cbf40a11020728ed91451161df20e9a402e99187c01019d8985e02fc30a3",
+      "internal/web/translation/zh-TW.json": "8ec7d0ff0dcaf6ab3992dd23db4d474f1eff1da410e78eca2b091598044e77c4"
+    }
   },
   {
     "version": "v3.10.2",
@@ -69,6 +84,21 @@
       "internal/web/controller/index.go",
       "internal/web/service/client_bulk.go",
       "internal/web/service/panel/sponsor.go"
-    ]
+    ],
+    "translations": {
+      "internal/web/translation/ar-EG.json": "6a94596af04ba60aca3a4e7da50683336d566728ecd19c3b388a6c59978508cc",
+      "internal/web/translation/en-US.json": "4434619a5756feafa08bcc6e255039ead927549faf6f74c00487c7636d682291",
+      "internal/web/translation/es-ES.json": "7495e9ffaf32711b44a52a88e87658cd4ccaa5b4b0ddba3574cbceb9d506cb22",
+      "internal/web/translation/fa-IR.json": "c3820dab39c76ceb8ac4af6edbb3eb46437fea190cf54e2ede1db2fbb941ba33",
+      "internal/web/translation/id-ID.json": "8b356eb3f1edfea2f9cbfe195d6d04d9b4d038389242c5c8d70e8537e1b65d43",
+      "internal/web/translation/ja-JP.json": "9b466b20ad8a1226e56c59d7c0dbf9717f8ab27f4e7110c5fccd90285a42d3d0",
+      "internal/web/translation/pt-BR.json": "5869e769312182dcc3464444dccec56789f67753d619823f205ea5358dd8fa49",
+      "internal/web/translation/ru-RU.json": "00b9c109c27e7a318d8c1cae2f3b653b6664f2efc86b915e9a38e4e86b97940c",
+      "internal/web/translation/tr-TR.json": "24df6f3246d4642ba9f45acc79319603d91c827e4801f60d4ab7723ae2c3e63e",
+      "internal/web/translation/uk-UA.json": "20aa5f477ac3d88409568816cc8cfa6cbb20a14f31c09fc00c290642dd3bb1ce",
+      "internal/web/translation/vi-VN.json": "d96c525ac1fa34df374c7c2a52ad270ea37584867f2548837bd29f717d1592e4",
+      "internal/web/translation/zh-CN.json": "2ede6ce95745884d9dbb6e178ebf5086b6a7c688a3bcc9d747e65a3fcf49e544",
+      "internal/web/translation/zh-TW.json": "c99fd7a41385328faef31e06509ca142e1dd67291bbe828668b30aa90bb3922e"
+    }
   }
 ]

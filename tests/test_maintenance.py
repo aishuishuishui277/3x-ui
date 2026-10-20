@@ -174,6 +174,7 @@ class SafetyTests(unittest.TestCase):
             p = self.d / f; p.parent.mkdir(parents=True, exist_ok=True); p.write_text('original sponsor')
         profile = copy.deepcopy(profiles[0])
         profile['files'] = {f:P.digest('original sponsor') for f in P.FILES}
+        profile['translations'] = {}
         profile['inventory'] = P.inventory(self.d)
         (self.d / 'frontend/src/new-sponsored.ts').write_text('sponsor new entry point')
         with patch.object(P.json, 'loads', return_value=[profile]):

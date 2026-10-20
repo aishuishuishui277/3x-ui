@@ -3,6 +3,7 @@
 import hashlib
 import json
 from pathlib import Path
+import re
 import sys
 
 HERE = Path(__file__).resolve().parent
@@ -20,6 +21,11 @@ def read(p):
 
 def digest(s):
     return hashlib.sha256(s.encode()).hexdigest()
+
+def translation_state(root):
+    return {p.relative_to(root).as_posix(): digest(json.dumps(json.loads(read(p))['pages']['sponsors'],
+                ensure_ascii=False, sort_keys=True))
+            for p in sorted((root / 'internal/web/translation').glob('*.json'))}
 
 def inventory(root):
     # New sponsor entry points require a new review, even if old files match.
@@ -42,7 +48,9 @@ def apply(root):
     profiles = json.loads((HERE / 'profiles.json').read_text())
     original = {f: read(root / f) for f in FILES}
     hashes = {f: digest(s) for f, s in original.items()}
-    matching = [p for p in profiles if p['files'] == hashes and p['inventory'] == inventory(root)]
+    translations = translation_state(root)
+    matching = [p for p in profiles if p['files'] == hashes and p['inventory'] == inventory(root)
+                and p['translations'] == translations]
     if not matching:
         raise ValueError('Unknown sponsor source fingerprint. Review upstream changes; no files changed.')
     out = dict(original)
@@ -78,6 +86,19 @@ export default function SponsorSlot(_props: Record<string, unknown>) {
 export default function SponsorsPage() { return null; }
 '''
     out[FILES[5]] = once(out[FILES[5]], "      { key: '/sponsors', icon: 'sponsors', title: t('menu.sponsors') },\n", '')
+    # Remove the deleted page's dead strings from every locale. Keep the two
+    # keys still referenced by SponsorCard's private/unrendered implementation.
+    for f in translations:
+        text = read(root / f)
+        pattern = r'(?ms)^    "sponsors": \{\n.*?^    \}'
+        blocks = list(re.finditer(pattern, text))
+        if len(blocks) != 1: raise ValueError('Unexpected sponsor translation block: ' + f)
+        block = blocks[0]
+        original_section = json.loads(block.group().split(': ', 1)[1])
+        kept = {k: v for k, v in original_section.items() if k in ('tag', 'visit')}
+        if set(kept) != {'tag', 'visit'}: raise ValueError('Unknown translation schema: ' + f)
+        replacement = '    "sponsors": ' + json.dumps(kept, ensure_ascii=False, indent=2).replace('\n', '\n    ')
+        out[f] = text[:block.start()] + replacement + text[block.end():]
     for f, content in out.items():
         (root / f).write_text(content, encoding='utf-8', newline='\n')
     test = '''package panel
@@ -120,7 +141,7 @@ test('placements and the old sponsor page render nothing and perform no fetch', 
 });
 '''
     (root / 'frontend/src/test/no-sponsor.test.tsx').write_text(frontend_test, encoding='utf-8', newline='\n')
-    report = {'profiles': [p['version'] for p in matching], 'before': hashes,
+    report = {'profiles': [p['version'] for p in matching], 'before': hashes, 'translation_before': translations,
               'after': {f: digest(s) for f, s in out.items()}}
     (root / 'no-sponsor-patch-report.json').write_text(json.dumps(report, indent=2) + '\n')
     return report
