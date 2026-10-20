@@ -70,8 +70,12 @@ jobs:
         run: |
           set -euo pipefail
           if [ ! -d candidates ]; then exit 0; fi
-          for dir in candidates/*; do
-            [ -d "$dir" ] || continue
+          found=0
+          # download-artifact v8 flattens a single matched artifact, while
+          # multiple artifacts may have per-artifact directories. Accept both.
+          while IFS= read -r -d '' checksum; do
+            found=1
+            dir=$(dirname "$checksum")
             (
               cd "$dir"
               sha256sum -c XRAY-SHA256SUMS
@@ -85,5 +89,7 @@ jobs:
               fi
               gh release upload "$tag" xray-linux-amd64.tar.gz xray-manifest.json xray-validation.json XRAY-SHA256SUMS --clobber
               gh release edit "$tag" --draft=false --latest=false --prerelease="$preview"
+              gh release view "$tag" --json isDraft,assets --jq 'if (.isDraft == false and (.assets | length) == 4) then "Published complete core candidate" else error("Incomplete publication") end'
             )
-          done
+          done < <(find candidates -name XRAY-SHA256SUMS -type f -print0)
+          if [ "$found" = 0 ]; then echo 'No new core artifacts; nothing to publish.'; fi
