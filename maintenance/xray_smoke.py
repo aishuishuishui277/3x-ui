@@ -71,7 +71,10 @@ def main():
                 protocol='vless', settings={'clients':[{'id':ident,'flow':'xtls-rprx-vision'}], 'decryption':'none'},
                 streamSettings={'network':'tcp', 'security':'reality', 'realitySettings':{
                     'target':f'127.0.0.1:{tls_port}', 'serverNames':['reality.test'], 'privateKey':private, 'shortIds':[sid]}})],
-                outbounds=[{'protocol':'freedom'}])
+                # Only this disposable test destination may bypass the core's
+                # default private-IP block. Never inject this into VPS config.
+                outbounds=[{'protocol':'freedom', 'settings':{'finalRules':[{
+                    'action':'allow', 'ip':['127.0.0.1/32'], 'port':str(httpd.server_port)}]}}])
             config = d / 'server.json'; config.write_text(json.dumps(server))
             subprocess.run([str(candidate), 'run', '-test', '-config', str(config)], check=True)
             launch([candidate, 'run', '-config', config], 'server', server_port)
