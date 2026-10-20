@@ -1,0 +1,37 @@
+{
+  "checked_date": "2026-10-20",
+  "repository": "aishuishuishui277/3x-ui",
+  "default_branch": "maintenance-no-sponsor",
+  "maintainer_code_commit": "73e9f98497d91ffcc95de2ce64a27d36b5aa9f27",
+  "build_maintenance_commit": "8cbf06671e0b24a7820b454a57265264642eb18e",
+  "releases": [
+    {
+      "tag": "v3.10.0-ns1",
+      "run_id": 39363071547,
+      "frontend_tests": 1747,
+      "frontend_test_files": 162,
+      "go_test_packages": 50,
+      "result": "success",
+      "sha256": "744c1ef7d9d5b242f84e6773d1c2c021c30a3b57a163298d022f5585e8396971",
+      "downloaded_and_server_package_validator": "passed"
+    },
+    {
+      "tag": "v3.10.2-ns1",
+      "run_id": 39362569369,
+      "frontend_tests": 1747,
+      "frontend_test_files": 162,
+      "go_test_packages": 50,
+      "result": "success",
+      "sha256": "b0b0a205eab804aee0776e16abbc06c33cd890ca3d82b2b9a43621c3e3059e48",
+      "downloaded_and_server_package_validator": "passed"
+    }
+  ],
+  "noop_run": {
+    "run_id": 39364229079,
+    "result": "success",
+    "maintenance_tests": 16,
+    "existing_release_build_and_publish": "skipped"
+  },
+  "vps_deployed": false,
+  "live_reality_tested": false
+}

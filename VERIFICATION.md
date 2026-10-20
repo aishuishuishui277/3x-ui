@@ -40,7 +40,13 @@ Release：https://github.com/aishuishuishui277/3x-ui/releases/tag/v3.10.0-ns1
 
 面板包 SHA256：`744c1ef7d9d5b242f84e6773d1c2c021c30a3b57a163298d022f5585e8396971`
 
-原版 3.10.0 用户可先选择此包进行同版本去广告；默认保留现有核心。线上 Reality 成功与否仍需部署后的实际客户端验收。
+原版 3.10.0 用户可先选择此包进行同版本去广告；默认保留现有核心。两个版本的公开面板包、源码、manifest、补丁和测试报告均已独立下载并全部校验 SHA256；两包也均被服务器脚本校验器接受。线上 Reality 成功与否仍需部署后的实际客户端验收。
+
+## 日常跳过重复构建已实测
+
+运行 https://github.com/aishuishuishui277/3x-ui/actions/runs/39364229079 成功：当前维护提交 `73e9f98497d91ffcc95de2ce64a27d36b5aa9f27` 在 Linux 通过 16 项维护测试，检测到已发布的 `v3.10.2-ns1` 后跳过补丁、Go/Node 环境、编译、打包和发布，没有重写现有 Release。
+
+默认分支已实际设为 `maintenance-no-sponsor`；每 6 小时 schedule 已放在该默认分支中。尚未等待到第一个自然定时时刻，已验证的是同一工作流的 push/手工触发路径；每 28 天 activity 提交也尚未自然触发。
 
 ## 首次远端运行发现并修复的问题
 
