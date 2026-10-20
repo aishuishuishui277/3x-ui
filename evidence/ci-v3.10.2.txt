@@ -1,0 +1,60 @@
+Run: https://github.com/aishuishuishui277/3x-ui/actions/runs/39362569369
+Conclusion: success; published v3.10.2-ns1.
+Actual public archive accepted by server validate_package().
+SHA256: b0b0a205eab804aee0776e16abbc06c33cd890ca3d82b2b9a43621c3e3059e48
+
+2026-10-20T03:10:49.5393915Z  Test Files  162 passed (162)
+2026-10-20T03:10:49.5409226Z       Tests  1747 passed (1747)
+2026-10-20T03:12:47.8049511Z ok  	github.com/mhsanaei/3x-ui/v3	0.739s
+2026-10-20T03:12:47.8052800Z ok  	github.com/mhsanaei/3x-ui/v3/internal/amneziawg	0.072s
+2026-10-20T03:13:05.4484820Z ok  	github.com/mhsanaei/3x-ui/v3/internal/amneziawgnet	17.709s
+2026-10-20T03:13:05.4486513Z ok  	github.com/mhsanaei/3x-ui/v3/internal/config	0.006s
+2026-10-20T03:13:05.4487960Z ok  	github.com/mhsanaei/3x-ui/v3/internal/crypto/nodetoken	0.004s
+2026-10-20T03:13:05.4489408Z ok  	github.com/mhsanaei/3x-ui/v3/internal/database	9.976s
+2026-10-20T03:13:05.4490709Z ok  	github.com/mhsanaei/3x-ui/v3/internal/database/dbtest	0.217s
+2026-10-20T03:13:05.4492594Z ok  	github.com/mhsanaei/3x-ui/v3/internal/database/model	0.020s
+2026-10-20T03:13:05.4494068Z ok  	github.com/mhsanaei/3x-ui/v3/internal/eventbus	0.298s
+2026-10-20T03:13:05.4495368Z ok  	github.com/mhsanaei/3x-ui/v3/internal/logger	0.003s
+2026-10-20T03:13:05.4496691Z ok  	github.com/mhsanaei/3x-ui/v3/internal/mtproto	0.631s
+2026-10-20T03:13:05.4498779Z ok  	github.com/mhsanaei/3x-ui/v3/internal/nodee2e	0.014s
+2026-10-20T03:13:05.4500093Z ok  	github.com/mhsanaei/3x-ui/v3/internal/pia	0.951s
+2026-10-20T03:13:05.4501307Z ok  	github.com/mhsanaei/3x-ui/v3/internal/sub	6.973s
+2026-10-20T03:13:05.9212638Z ok  	github.com/mhsanaei/3x-ui/v3/internal/tuic	7.573s
+2026-10-20T03:13:05.9242258Z ok  	github.com/mhsanaei/3x-ui/v3/internal/tunnelmonitor	0.010s
+2026-10-20T03:13:05.9243353Z ok  	github.com/mhsanaei/3x-ui/v3/internal/util/common	0.057s
+2026-10-20T03:13:05.9272035Z ok  	github.com/mhsanaei/3x-ui/v3/internal/util/cronspec	0.004s
+2026-10-20T03:13:05.9302070Z ok  	github.com/mhsanaei/3x-ui/v3/internal/util/crypto	0.629s
+2026-10-20T03:13:05.9316993Z ok  	github.com/mhsanaei/3x-ui/v3/internal/util/json_util	0.002s
+2026-10-20T03:13:05.9361959Z ok  	github.com/mhsanaei/3x-ui/v3/internal/util/ldap	0.003s
+2026-10-20T03:13:05.9392211Z ok  	github.com/mhsanaei/3x-ui/v3/internal/util/link	0.017s
+2026-10-20T03:13:05.9417757Z ok  	github.com/mhsanaei/3x-ui/v3/internal/util/maskcompat	0.017s
+2026-10-20T03:13:05.9442051Z ok  	github.com/mhsanaei/3x-ui/v3/internal/util/netproxy	0.004s
+2026-10-20T03:13:05.9471990Z ok  	github.com/mhsanaei/3x-ui/v3/internal/util/netsafe	0.006s
+2026-10-20T03:13:05.9492087Z ok  	github.com/mhsanaei/3x-ui/v3/internal/util/random	0.002s
+2026-10-20T03:13:05.9562561Z ok  	github.com/mhsanaei/3x-ui/v3/internal/util/totp	0.002s
+2026-10-20T03:13:05.9613762Z ok  	github.com/mhsanaei/3x-ui/v3/internal/util/version	0.002s
+2026-10-20T03:13:05.9652022Z ok  	github.com/mhsanaei/3x-ui/v3/internal/util/wirecodec	0.004s
+2026-10-20T03:13:05.9682013Z ok  	github.com/mhsanaei/3x-ui/v3/internal/util/wireguard	0.003s
+2026-10-20T03:13:08.9308148Z ok  	github.com/mhsanaei/3x-ui/v3/internal/web	0.923s
+2026-10-20T03:13:16.0382617Z ok  	github.com/mhsanaei/3x-ui/v3/internal/web/controller	5.634s
+2026-10-20T03:13:16.0402733Z ok  	github.com/mhsanaei/3x-ui/v3/internal/web/entity	0.004s
+2026-10-20T03:13:24.8913401Z ok  	github.com/mhsanaei/3x-ui/v3/internal/web/job	14.132s
+2026-10-20T03:13:24.8919512Z ok  	github.com/mhsanaei/3x-ui/v3/internal/web/middleware	0.030s
+2026-10-20T03:13:24.8920926Z ok  	github.com/mhsanaei/3x-ui/v3/internal/web/network	0.039s
+2026-10-20T03:13:24.8922647Z ok  	github.com/mhsanaei/3x-ui/v3/internal/web/runtime	0.175s
+2026-10-20T03:13:54.0517269Z ok  	github.com/mhsanaei/3x-ui/v3/internal/web/service	35.264s
+2026-10-20T03:13:54.0518304Z ok  	github.com/mhsanaei/3x-ui/v3/internal/web/service/discord	3.616s
+2026-10-20T03:13:54.0519274Z ok  	github.com/mhsanaei/3x-ui/v3/internal/web/service/email	0.656s
+2026-10-20T03:13:54.0520256Z ok  	github.com/mhsanaei/3x-ui/v3/internal/web/service/integration	0.700s
+2026-10-20T03:13:54.0521503Z ok  	github.com/mhsanaei/3x-ui/v3/internal/web/service/outbound	0.048s
+2026-10-20T03:13:54.0522821Z ok  	github.com/mhsanaei/3x-ui/v3/internal/web/service/panel	0.893s
+2026-10-20T03:13:54.0523757Z ok  	github.com/mhsanaei/3x-ui/v3/internal/web/service/tgbot	1.874s
+2026-10-20T03:13:54.0524652Z ok  	github.com/mhsanaei/3x-ui/v3/internal/web/session	0.014s
+2026-10-20T03:13:54.0525495Z ok  	github.com/mhsanaei/3x-ui/v3/internal/web/websocket	0.141s
+2026-10-20T03:13:54.0526285Z ok  	github.com/mhsanaei/3x-ui/v3/internal/xray	0.609s
+2026-10-20T03:13:54.0527089Z ok  	github.com/mhsanaei/3x-ui/v3/internal/xray/dnsconf	0.017s
+2026-10-20T03:13:54.0527915Z ok  	github.com/mhsanaei/3x-ui/v3/internal/xray/geodata	0.014s
+2026-10-20T03:13:54.0528728Z ok  	github.com/mhsanaei/3x-ui/v3/tools/openapigen	0.005s
+2026-10-20T03:15:23.4935598Z ../panel: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, BuildID[sha1]=17fd4da0f2dc56707df5c93241c5013da27cce3c, stripped
+2026-10-20T03:15:43.6024285Z ##[group]Run python3 maintenance/smoke.py
+

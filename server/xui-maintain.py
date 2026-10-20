@@ -88,13 +88,24 @@ def load_config():
         if not p.is_absolute() or p.is_symlink() or not p.is_dir() or str(p.resolve()) != str(p):
             raise ValueError('Unsupported path: ' + k)
         private(p)
+    validate_layout(c)
+    return c
+
+def validate_layout(c):
+    # Never treat a shared system directory as a private application store:
+    # rollback replaces store contents, so these paths must fail before stop.
+    reserved = {Path(p).resolve() for p in ('/', '/etc', '/etc/default', '/etc/ssh', '/etc/ssl',
+        '/etc/ssl/private', '/etc/systemd', '/etc/systemd/system', '/usr', '/usr/local',
+        '/usr/bin', '/usr/sbin', '/bin', '/sbin', '/lib', '/lib64', '/var', '/var/lib',
+        '/opt', '/root', '/root/.ssh', '/home')}
+    if any(Path(c[k]).resolve() in reserved for k in ('panel_dir', 'db_dir', 'bin_dir')):
+        raise ValueError('Shared system directories cannot be installation stores')
     panel, db, core = (Path(c[k]) for k in ('panel_dir', 'db_dir', 'bin_dir'))
     if core == panel or panel.is_relative_to(core) or db.is_relative_to(core) or core.is_relative_to(db) or panel.is_relative_to(db) or db.is_relative_to(panel):
         raise ValueError('Overlapping installation directories are unsupported')
     for p in (panel, db, core):
         if STATE.is_relative_to(p) or p.is_relative_to(STATE) or p == Path('/'):
             raise ValueError('Installation and backup paths overlap')
-    return c
 
 def db_file(c):
     return Path(c['db_dir']) / 'x-ui.db'
@@ -416,6 +427,7 @@ def init(args):
     c = runtime(args.unit)
     if c['exe'] != str(Path(c['panel_dir']) / 'x-ui'): raise ValueError('Unexpected executable')
     c.pop('exe')
+    validate_layout(c)
     u = urllib.parse.urlsplit(args.health_url)
     if u.scheme not in ('http', 'https') or not u.hostname or u.username or u.password or u.query or u.fragment or not u.path.endswith('/'):
         raise ValueError('health URL must include base path and trailing /; no credentials/query')

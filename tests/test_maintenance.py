@@ -83,6 +83,11 @@ class SafetyTests(unittest.TestCase):
         self.assertEqual(T.version('v3.10.2'), (3, 10, 2))
         for tag in ('dev-latest', 'v3.11.0-rc1', 'v3.10.2;evil'):
             with self.assertRaises(ValueError): T.version(tag)
+    def test_shared_system_directory_rejected_before_service_stop(self):
+        c = dict(panel_dir='/usr/local/x-ui', db_dir='/etc/x-ui', bin_dir='/usr/bin')
+        with patch.object(M, 'systemctl') as ctl:
+            with self.assertRaisesRegex(ValueError, 'Shared system'): M.validate_layout(c)
+            ctl.assert_not_called()
     def test_patch_rejects_unknown_source_without_mutation(self):
         for f in P.FILES:
             p = self.d / f; p.parent.mkdir(parents=True, exist_ok=True); p.write_text('unknown')
