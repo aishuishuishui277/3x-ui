@@ -29,7 +29,8 @@ def main():
                         raise RuntimeError('Panel exited: ' + (base / 'panel.log').read_text())
                     try:
                         with urllib.request.urlopen(url, timeout=2) as r:
-                            assert r.status == 200 and b'<html' in r.read().lower()
+                            if r.status != 200 or b'<html' not in r.read().lower():
+                                raise ValueError('Login HTML/status mismatch')
                         break
                     except OSError:
                         time.sleep(1)
@@ -37,21 +38,26 @@ def main():
                     raise RuntimeError('Panel readiness timeout')
                 with urllib.request.urlopen(url + 'sponsors', timeout=5) as r:
                     data = json.load(r)
-                    assert data['success'] and data['obj'] == {'sponsors': []}, data
+                    if not data.get('success') or data.get('obj') != {'sponsors': []}:
+                        raise ValueError('Sponsor policy mismatch: ' + str(data))
                 try:
                     urllib.request.urlopen(url + 'sponsors/logo/acme.png', timeout=5)
                     raise AssertionError('Logo endpoint allowed')
                 except urllib.error.HTTPError as e:
-                    assert e.code == 404
+                    if e.code != 404: raise ValueError('Unexpected sponsor logo status: ' + str(e.code)) from e
             finally:
                 p.terminate()
                 try: p.wait(timeout=15)
                 except subprocess.TimeoutExpired:
                     p.kill(); p.wait()
     dist = Path('dist')
-    (dist / 'validation.json').write_text(json.dumps({'go_tests': 'passed', 'frontend_typecheck': 'passed',
-        'frontend_build': 'passed', 'frontend_unit_and_components': 'passed', 'static_amd64': 'passed', 'isolated_login_http': 'passed',
-        'empty_sponsor_api': 'passed', 'logo_404': 'passed', 'live_reality': 'not tested'}, indent=2) + '\n')
+    evidence = {p.stem:json.loads(p.read_text()) for p in Path('validation-evidence').glob('*.json')}
+    required = ['go_tests','frontend_typecheck','frontend_build','frontend_unit_and_components','static_amd64']
+    if any(evidence.get(k, {}).get('status') != 'passed' for k in required):
+        raise ValueError('Missing/failed real validation receipts; cannot mark build as passed')
+    report = {k:evidence[k]['status'] for k in required}
+    report.update(isolated_login_http='passed',empty_sponsor_api='passed',logo_404='passed',live_reality='not tested')
+    (dist / 'validation.json').write_text(json.dumps(report, indent=2) + '\n')
     names = ['x-ui-panel-linux-amd64.tar.gz', 'source-patched.tar.gz', 'manifest.json', 'patch-report.json', 'validation.json']
     (dist / 'SHA256SUMS').write_text(''.join(hashlib.sha256((dist / n).read_bytes()).hexdigest() + '  ' + n + '\n' for n in names))
 

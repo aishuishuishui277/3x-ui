@@ -1,117 +1,66 @@
-# Xray 核心自动维护（与面板方案共存）
+# Xray 独立候选维护（2026-10-30 修复）
 
-用户于 2026-10-20 确认：VPS 已更新到无赞助面板 3.10.2，Xray 26.10.10 正常运行，Reality 节点可连接。这是用户实测基线；本工具没有登录或修改 VPS。
+本次只在本地修复分支验证，没有推送、合并、发布或连接任何 VPS。旧版结果存于 VERIFICATION.md，不能把历史 26.10.10 基线用于当前构建。
 
-## 自动化做什么
+## 三种版本角色
 
-- 面板：原 `no-sponsor.yml` 每 6 小时追踪 3x-ui 正式版，严格补丁、编译、测试、发布照常执行。`xui-maintain update` 默认保留现有核心。
-- 核心：新增 `xray.yml` 每 6 小时分别检查 XTLS 官方正式版和预发布版，最低基线 26.10.10。使用官方 Linux AMD64 二进制，核对 GitHub 资产 SHA256 和官方 `.dgst` 的 SHA2-256，不修改核心、不在 VPS 编译。
-- 发布前核对 ELF 架构及二进制版本，并用 **26.10.10 客户端、新版客户端分别连接新版服务端**，实际传输 VLESS + REALITY + Vision HTTP 数据。TLS 目标与 HTTP 目标均为 CI 本地临时服务，不依赖公共伪装站。
-- 测试通过才发布独立 `xray-v版本-r1` Release，保留官方的预发布标记。正式版和预发布版均只生成候选包；不持有 SSH 凭据，不自动替换线上核心。
-- 现有每 28 天的仓库活动记录由面板工作流继续维护。GitHub schedule 可能延迟；失败查看 Actions，并可手动 Run workflow 重试。建议在 GitHub 仓库 Watch → Custom 中订阅 Releases；这一步由账号本人设置。
+| 角色 | 来源 | 当前值 |
+|---|---|---|
+| 独立候选最低允许版本 | maintenance/xray-policy.json 的 minimum_candidate_version | v26.10.21 |
+| REALITY 客户端回归基线 | 同文件 reality_baseline 与 baseline_assets | v26.10.21，两个官方资产 SHA256 已审核并固定 |
+| 面板随包核心 | maintenance/profiles.json 对应版本的 bundle | v3.10.2 → 26.10.10；v3.11.0 → 26.10.21 |
 
-## 当前官方渠道差异
+三个角色分别读取和校验，不能因为独立候选变成 26.10.29，就把面板官方安装包的核心替换成它。旧面板的 26.10.10 按该面板官方归档摘要与已审查二进制摘要校验，不再访问已经 404 的 Xray v26.10.10 Release API。
 
-2026-10-20 读取 XTLS 官方 Release API：`26.10.10` 与 `26.10.17` 的 `prerelease=true`，最新正式版 API 返回 `26.3.27`。因此默认正式渠道目前不会提供高于你的基线的更新，也绝不把 26.3.27 装回去。
+官方 API 核验：[26.10.21](https://github.com/XTLS/Xray-core/releases/tag/v26.10.21) 和 [26.10.29](https://github.com/XTLS/Xray-core/releases/tag/v26.10.29) 当前均为正式版。需要预发布版时才选择 preview，保留官方标记。
 
-需要与现有核心同类的官方预发布版本时，检查命令明确选择 `--channel preview`；实际安装再显式加 `--allow-prerelease`。预发布包不是经本项目重新认定的正式版。
+## 自动化与真实测试
 
-来源：[官方发布列表](https://github.com/XTLS/Xray-core/releases)、[26.10.17](https://github.com/XTLS/Xray-core/releases/tag/v26.10.17)、[26.10.10](https://github.com/XTLS/Xray-core/releases/tag/v26.10.10)。3x-ui 源码依据：v3.10.2 的 `internal/web/service/server.go`（下载 `.dgst` 和 `UpdateXray`）、`internal/xray/process.go`（从数据库生成配置并启动核心）。
+两条工作流改为每日两次检查：面板北京时间 10:23、22:23，核心 10:47、22:47。GitHub schedule 可能延迟。手动 workflow_dispatch 随时可用，不必为低频正式发布每六小时重复下载或报错。
 
-## 已安装原方案的 VPS：只需升级维护工具一次
+只使用官方未修改的 Linux AMD64 核心，严格校验 GitHub 资产摘要、官方 .dgst SHA2-256、ELF 和实际版本。基线资产还必须匹配审核时固定的摘要，删除、替换或校验失败均阻止发布。
 
-如果你沿用原方案的 `/opt/3x-ui-maintenance` 克隆目录，直接执行：
+真实流量测试分别使用 26.10.21 基线客户端和候选客户端连接候选服务端，实际传输 REALITY + Vision 数据并比较随机正文。临时 TLS、HTTP 目标、UUID 和密钥都仅在本机/CI 临时目录中创建，不读取或修改 VPS 的 Reality 配置。
 
-```bash
-sudo git -C /opt/3x-ui-maintenance pull --ff-only
-sudo bash /opt/3x-ui-maintenance/server/install.sh
-sudo xui-maintain inspect
-sudo xray-maintain check --channel preview
-```
+完整 Release 已发布时返回 NO_UPDATE，不下载候选或基线。preview 不重复构建 stable 已覆盖的正式版。手动标签由匹配的渠道执行；validate_existing 可重新验证，仍不能覆盖已有公开 Release。
 
-如果 pull 报错或目录不存在，停止这条路径，改用下面的完整源码包安装方法，不执行来源不明的已有文件。完整源码包可从本说明所在 GitHub 分支页面的 Code → Download ZIP 下载；也可在 VPS 使用 git clone（目录需尚不存在）：
+首次真实失败仍让 workflow 失败，分别记录 BUILD_FAILED / TEST_FAILED。之后相同输入、资产和维护代码的定时检查记录原阻塞状态，跳过重试，不会将原失败改成通过。workflow_dispatch、代码/策略或官方资产变化会重新尝试。Actions cache 被清理时可能重新发现一次失败；缓存不能授权发布或代替校验。
 
-```bash
-sudo git clone --depth 1 --branch maintenance-no-sponsor \
-  https://github.com/aishuishuishui277/3x-ui.git /opt/3x-ui-maintenance
-```
+## 发布与审批边界
 
-下载本仓库 **maintenance-no-sponsor 分支的完整源码包**，解压后进入目录执行：
+修复分支 push 只能验证并提供 Artifact。发布只允许稳定维护分支 schedule 或 publish=true 的手动操作，手动默认不发布。上传前校验全部文件清单、SHA256、manifest 和真实测试报告，草稿资产再与 GitHub API 摘要逐项比较，全部符合才公开。
 
-```bash
-sudo bash server/install.sh
-sudo xui-maintain inspect
-```
+服务端安装、审批和回滚代码本次保持原样。面板更新默认保留现场核心，--with-bundled-xray 不允许随包旧核心降级现场新核心。核心单独批准 SHA256 后才能替换，回滚只恢复核心，不恢复旧数据库、SQLite WAL 或地理数据。
 
-这会安装/更新 `/usr/local/sbin/xui-maintain` 和 `/usr/local/sbin/xray-maintain`。沿用 `/etc/x-ui-maintainer.json`，无需重新 init；不重启面板、不改 systemd sandbox、不更新核心。如果此前只部署了面板、尚未初始化维护工具，请先按 `INSTALL-NOW.md` 初始化健康检查地址。
+未来经批准合并后的正式渠道检查仍为：
 
-更新工具时下载完整目录，不能只下载新核心脚本：核心脚本需要同目录的 `xui-maintain`。下载源码包失败时停止，不执行不完整的脚本。
-
-## 日常检查与批准
-
-```bash
-# 检查并下载已经通过 GitHub 测试的正式渠道候选；不重启服务
+~~~bash
 sudo xray-maintain check
+~~~
 
-# 检查官方预发布渠道；与你当前 26.10.10 的官方渠道一致
+官方预发布渠道才使用：
+
+~~~bash
 sudo xray-maintain check --channel preview
+~~~
 
-# 或明确检查某个候选
-sudo xray-maintain check xray-v26.10.17-r1 --channel preview
-```
+检查输出具体批准命令；仅用户执行该命令才会停止服务更新。回滚仍为 xray-maintain rollback 备份ID --approve-rollback，中断恢复仍为 xray-maintain recover --approve-rollback。
 
-检查会显示准确版本、官方预发布标记、包 SHA256 和完整的批准命令。复制该次输出的命令才执行安装。每个新包都需批准自己的 SHA256，不能用旧哈希或 `latest` 批准未来未知版本。若核心已相同或更新，停止并保留当前核心。
+本次不执行这些服务器命令，不修改 VPS timer、systemd、证书、数据库或节点。旧有 VPS 可选检查 timer 的频率未改动。
 
-首个候选包 `26.10.17-r1` 已公开发布，并下载后再次通过服务器包验证器。它的准确 SHA256 如下；先运行上面的 check 核对一致，只有决定升级时才执行：
+## 本地复现核心验证（隔离 Linux x86_64）
 
-```bash
-sudo xray-maintain update xray-v26.10.17-r1 \
-  --approve 51d76443b7e94c8a5317fbfac19766530efdfb6699dc4dbe5e99cbd877924c02 \
-  --allow-prerelease
-```
+需要 Python 3.11+、openssl、curl 和联网访问官方 GitHub。在本仓库独立工作副本执行，以下没有发布动作：
 
-下一版不能沿用这一哈希，使用下一次 check 输出的命令。发布包和验证报告见 [xray-v26.10.17-r1](https://github.com/aishuishuishui277/3x-ui/releases/tag/xray-v26.10.17-r1)。
+~~~bash
+export GITHUB_REPOSITORY=aishuishuishui277/3x-ui
+export GITHUB_SHA=local-validation-unpublished
+export GITHUB_RUN_ID=local
+export GITHUB_OUTPUT="$PWD/local-core-output.txt"
+export CHANNEL=stable XRAY_TAG=v26.10.29 FORCE_VALIDATE=true
+python3 maintenance/xray_release.py
+python3 maintenance/xray_smoke.py
+python3 maintenance/verify_release.py core xray-dist
+~~~
 
-执行时再次核对完整包/报告、现场生成配置和当前地理数据；配置不兼容时在停服务前拒绝。通过后短暂停止整个 x-ui 服务，备份旧核心，原子替换，启动原服务，并检查面板健康、Xray 子进程、SQLite 完整性及 Reality 节点配置指纹。默认等待 15 秒后再检健康。此操作会短暂中断连接。
-
-核心更新仅替换 `xray-linux-amd64`。面板、SQLite/WAL、UUID、Reality 私钥、端口和 geoip/geosite 文件不由该工具覆盖。面板启动时仍会按原机制从数据库生成 `config.json`。核心更新与面板更新共享锁和未完成事务记录，不能并发更新。
-
-**更新成功后用你实际的 Reality 客户端连接验证。** CI 本地传输和服务器配置/健康检查不能证明你家网络到 VPS 的外部连接正常，也不能覆盖所有自定义协议或路由。
-
-## 一键回滚核心
-
-```bash
-sudo xray-maintain backups
-sudo xray-maintain rollback 上面列出的备份ID --approve-rollback
-```
-
-恢复旧核心前校验备份和现场配置；恢复后用原 systemd 服务启动。故障核心另存救援副本。**不恢复旧数据库，不回退已累计流量，不改地理数据。** 备份位于 `/var/lib/x-ui-maintainer/core-backups/`，配置诊断副本含节点密钥，应仅 root 访问。
-
-更新中断后若提示未完成核心事务：
-
-```bash
-sudo xray-maintain recover --approve-rollback
-```
-
-面板事务仍用 `xui-maintain recover --approve-rollback`。两个工具会检查事务类型并指向正确命令。不要手工删除 pending.json 绕过恢复。
-
-## 可选：VPS 定时下载检查，仍不自动部署
-
-```bash
-sudo bash server/install-xray-watch.sh preview
-# 只接受正式渠道则把 preview 改成 stable
-systemctl list-timers xray-maintain-check.timer
-journalctl -u xray-maintain-check.service -n 50 --no-pager
-```
-
-该可选脚本只创建专用检查服务/定时器；每 6 小时检查一次，成功下载后在日志中打印批准命令。不改 x-ui.service 或其 sandbox，也不包含自动 update 命令。不要同时使用面板的自动核心更新任务，以免出现另一条不经过批准的替换路径。
-
-停用：`sudo systemctl disable --now xray-maintain-check.timer`。候选包检查占用存储，已有同一标签会重新校验/暂存；脚本不会自动清理用于恢复的备份。
-
-## 保留原方案的边界
-
-面板更新默认保留你安装的新核心。`--with-bundled-xray` 是原有显式可选项，仅在你确实需要面板随包核心时使用；如果随包核心比现场核心旧，脚本在停服前拒绝。正常回退核心使用 `xray-maintain rollback`。
-
-未来面板上游改动赞助入口或随包核心版本时，原严格校验仍可能停止面板构建，需要一次源码复核；独立核心工作流可继续检查。自动化不通过放宽补丁指纹、跳过测试或隐藏失败来保证每版必定发布。
-
-SHA256 在 GitHub HTTPS 信任边界内校验完整性，不能等同于独立发布者签名。包内包含官方 MIT LICENSE，并链接官方对应版本源码。
+生成目录为本地验证结果，不能据此声称已经发布或验证用户外部网络。测试基线消失时应复核更新策略，不能跳过旧客户端流量测试。

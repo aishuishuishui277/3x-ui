@@ -1,0 +1,8 @@
+{
+  "minimum_candidate_version": "v26.10.21",
+  "reality_baseline": "v26.10.21",
+  "baseline_assets": {
+    "Xray-linux-64.zip": "0eec3ed4163c273d8c8bf821f7d219e257921cf584aa3fb970715e458e631978",
+    "Xray-linux-64.zip.dgst": "9740d89f7c4d252bd92065cc2dc43bb3830fd77969f59e782c7b9f37d8d0e666"
+  }
+}

@@ -1,15 +1,23 @@
 name: Xray official AMD64 candidates
 on:
   schedule:
-    - cron: '47 */6 * * *'
+    - cron: '47 2,14 * * *'
   workflow_dispatch:
     inputs:
       xray_tag:
         description: '留空按渠道自动选择；指定预发布标签只在 preview 任务构建'
         type: string
         default: ''
+      publish:
+        description: '在稳定维护分支发布通过真实流量测试的候选包'
+        type: boolean
+        default: false
+      validate_existing:
+        description: '重新运行已有核心的真实流量回归；不会覆盖公开 Release'
+        type: boolean
+        default: false
   push:
-    paths: ['maintenance/xray*.py', 'server/**', 'tests/test_xray.py', '.github/workflows/xray.yml']
+    paths: ['maintenance/**', 'server/**', 'tests/**', '.github/workflows/xray.yml']
 permissions:
   contents: read
 concurrency:
@@ -29,20 +37,33 @@ jobs:
           persist-credentials: false
       - name: Maintenance regression tests
         run: python3 -m unittest discover -s tests -v
+      - uses: actions/cache/restore@v5
+        with:
+          path: .maintenance-state
+          key: xray-observation-${{ matrix.channel }}-${{ github.ref_name }}-${{ github.run_id }}
+          restore-keys: xray-observation-${{ matrix.channel }}-${{ github.ref_name }}-
       - name: Select and verify official XTLS core
         id: select
         env:
           GH_TOKEN: ${{ github.token }}
           CHANNEL: ${{ matrix.channel }}
-          XRAY_TAG: ${{ matrix.channel == 'preview' && inputs.xray_tag || '' }}
+          XRAY_TAG: ${{ inputs.xray_tag }}
+          FORCE_VALIDATE: ${{ inputs.validate_existing }}
         run: python3 maintenance/xray_release.py
       - name: REALITY Vision actual loopback traffic with baseline and candidate clients
+        id: reality
         if: steps.select.outputs.build == 'true'
         run: python3 maintenance/xray_smoke.py
+      - name: Verify complete core candidate
+        if: steps.select.outputs.build == 'true'
+        run: |
+          python3 maintenance/verify_release.py core xray-dist
+          python3 maintenance/status.py VALIDATED
+          cp attempt.json xray-dist/attempt.json
       - uses: actions/upload-artifact@v7
         if: steps.select.outputs.build == 'true'
         with:
-          name: xray-${{ matrix.channel }}-${{ steps.select.outputs.tag }}
+          name: xray-package-${{ matrix.channel }}-${{ steps.select.outputs.tag }}
           path: xray-dist/*
           if-no-files-found: error
           retention-days: 30
@@ -52,15 +73,40 @@ jobs:
           CHANNEL: ${{ matrix.channel }}
           RESULT: ${{ job.status }}
         run: echo "### Xray $CHANNEL $RESULT；只生成候选包，VPS 更新仍需批准。" >> "$GITHUB_STEP_SUMMARY"
+      - name: Record distinct failure state
+        if: failure()
+        env:
+          TEST_FAILURE: ${{ steps.reality.conclusion == 'failure' }}
+        run: |
+          if [ "$TEST_FAILURE" = true ]; then python3 maintenance/status.py TEST_FAILED; else python3 maintenance/status.py BUILD_FAILED; fi
+      - uses: actions/cache/save@v5
+        if: always()
+        with:
+          path: .maintenance-state
+          key: xray-observation-${{ matrix.channel }}-${{ github.ref_name }}-${{ github.run_id }}
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: xray-observation-${{ matrix.channel }}
+          path: maintenance-status.json
+          if-no-files-found: ignore
   publish:
     needs: verify
+    if: github.ref_name == 'maintenance-no-sponsor' && (github.event_name == 'schedule' || inputs.publish == true)
     runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        channel: [stable, preview]
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - uses: actions/download-artifact@v8
         with:
-          pattern: xray-*
+          pattern: xray-package-${{ matrix.channel }}-*
           path: candidates
       - name: Publish tested core candidates; preserve upstream prerelease flag
         env:
@@ -71,25 +117,40 @@ jobs:
           set -euo pipefail
           if [ ! -d candidates ]; then exit 0; fi
           found=0
+          verifier="$PWD/maintenance/verify_release.py"
           # download-artifact v8 flattens a single matched artifact, while
           # multiple artifacts may have per-artifact directories. Accept both.
           while IFS= read -r -d '' checksum; do
             found=1
             dir=$(dirname "$checksum")
+            cp "$dir/attempt.json" attempt.json
             (
               cd "$dir"
+              python3 "$verifier" core .
               sha256sum -c XRAY-SHA256SUMS
               tag=$(python3 -c 'import json; print(json.load(open("xray-manifest.json"))["release_tag"])')
               preview=$(python3 -c 'import json; print(str(json.load(open("xray-manifest.json"))["upstream_prerelease"]).lower())')
               if gh release view "$tag" --json isDraft -q .isDraft > existing.txt 2>/dev/null; then
                 if [ "$(cat existing.txt)" = false ]; then exit 0; fi
               else
-                printf '%s\n' 'XTLS 官方 Linux AMD64 核心，未修改。校验官方 SHA256、ELF、版本，以及 26.10.10 和候选客户端的 REALITY+Vision 本地传输。未验证你的 VPS 外部连接。' '核心单独批准部署；不更新面板、数据库或地理数据。详见默认分支 XRAY-UPDATE.zh-CN.md。' > notes.md
+                baseline=$(python3 -c 'import json; print(json.load(open("xray-manifest.json"))["baseline"])')
+                printf '%s\n' "XTLS 官方核心；校验摘要、ELF、版本，并通过 $baseline 和候选客户端的 REALITY+Vision 本地传输。未验证 VPS 外部连接。" '核心单独批准部署；不更新面板、数据库或地理数据。' > notes.md
                 gh release create "$tag" --draft --target "$GITHUB_SHA" --prerelease="$preview" --title "$tag · official Xray AMD64" --notes-file notes.md
               fi
               gh release upload "$tag" xray-linux-amd64.tar.gz xray-manifest.json xray-validation.json XRAY-SHA256SUMS --clobber
+              gh api "repos/$GH_REPO/releases/tags/$tag" > uploaded-release.json
+              python3 "$verifier" core . --remote-json uploaded-release.json
               gh release edit "$tag" --draft=false --latest=false --prerelease="$preview"
-              gh release view "$tag" --json isDraft,assets --jq 'if (.isDraft == false and (.assets | length) == 4) then "Published complete core candidate" else error("Incomplete publication") end'
+              gh release view "$tag" --json isDraft,assets --jq 'if (.isDraft == false and (.assets | length) == 4) then "PUBLISHED" else error("Incomplete publication") end'
+              printf '{"status":"PUBLISHED","release_tag":"%s"}\n' "$tag" > publication-status.json
             )
           done < <(find candidates -name XRAY-SHA256SUMS -type f -print0)
           if [ "$found" = 0 ]; then echo 'No new core artifacts; nothing to publish.'; fi
+      - name: Preserve publication failure without hiding it
+        if: failure()
+        run: python3 maintenance/status.py BUILD_FAILED
+      - uses: actions/cache/save@v5
+        if: failure()
+        with:
+          path: .maintenance-state
+          key: xray-observation-${{ matrix.channel }}-${{ github.ref_name }}-${{ github.run_id }}-publication

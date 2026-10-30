@@ -30,8 +30,14 @@ def wait(p, number, log):
     raise RuntimeError('Readiness timeout: ' + log.read_text(errors='replace'))
 
 def main():
+    manifest = json.loads(Path('xray-dist/xray-manifest.json').read_text())
     candidate = Path('xray-work/xray').resolve()
     baseline = Path('xray-work/baseline/xray').resolve()
+    if hashlib.sha256(baseline.read_bytes()).hexdigest() != manifest['baseline_xray_sha256']:
+        raise ValueError('REALITY baseline binary SHA256 mismatch')
+    observed = subprocess.check_output([str(baseline), 'version'], text=True)
+    if not observed.startswith('Xray ' + manifest['baseline'].lstrip('v') + ' '):
+        raise ValueError('REALITY baseline binary version mismatch')
     results = []
     with tempfile.TemporaryDirectory() as tmp:
         d = Path(tmp); processes = []; handles = []
@@ -110,7 +116,7 @@ def main():
     dist = Path('xray-dist')
     (dist / 'xray-validation.json').write_text(json.dumps(dict(official_sha256='passed', elf_amd64='passed',
         binary_version='passed', reality_vision_loopback=results, live_vps='not tested',
-        baseline_client='v26.10.10'), indent=2) + '\n')
+        baseline_client=manifest['baseline'], baseline_xray_sha256=manifest['baseline_xray_sha256']), indent=2) + '\n')
     names = ['xray-linux-amd64.tar.gz', 'xray-manifest.json', 'xray-validation.json']
     (dist / 'XRAY-SHA256SUMS').write_text(''.join(hashlib.sha256((dist / n).read_bytes()).hexdigest() + '  ' + n + '\n' for n in names))
 

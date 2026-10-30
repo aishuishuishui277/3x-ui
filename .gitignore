@@ -8,3 +8,8 @@ panel
 selection.json
 xray-work/
 xray-dist/
+.maintenance-state/
+attempt.json
+maintenance-status.json
+review-required.json
+validation-evidence/

@@ -7,8 +7,7 @@
       "internal/web/service/panel/sponsor_test.go": "7e7affc2084055b3b6d9761a3fff7477a2d5ab2c4535b36475f3af25e6224b88",
       "frontend/src/api/queries/useSponsorsQuery.ts": "ecace055bced670727c6584cabd9fe0fa682cd05b34234ff6a297a23af675a0b",
       "frontend/src/components/sponsor/SponsorSlot.tsx": "de71227c3371b6b997314a842e5a087fe6c6bbf64ce734858cf9d4fbce103d7c",
-      "frontend/src/pages/sponsors/SponsorsPage.tsx": "2843f78ae4bd12f56a6e1bae5f16f4697b18407452d461bf72cfdaf604327e6f",
-      "frontend/src/layouts/AppSidebar.tsx": "e4f60bb1523ec13a7477e2e73ab2cc8702cf15831c98f9f7d9c5fed5c80930bc"
+      "frontend/src/pages/sponsors/SponsorsPage.tsx": "2843f78ae4bd12f56a6e1bae5f16f4697b18407452d461bf72cfdaf604327e6f"
     },
     "inventory": [
       "frontend/src/api/queries/useSponsorsQuery.ts",
@@ -48,6 +47,36 @@
       "internal/web/translation/vi-VN.json": "3052c138118451aee055a87686014d3217bda3a4b107fa584d25d8aab35883da",
       "internal/web/translation/zh-CN.json": "3bd6cbf40a11020728ed91451161df20e9a402e99187c01019d8985e02fc30a3",
       "internal/web/translation/zh-TW.json": "8ec7d0ff0dcaf6ab3992dd23db4d474f1eff1da410e78eca2b091598044e77c4"
+    },
+    "layout": "sidebar",
+    "surface": {
+      "frontend/src/api/queries/useSponsorsQuery.ts": "48e723b8c81256301b80fa2e0f18c2fd9b86028b14f909409a2783bbef7dcb91",
+      "frontend/src/api/queryKeys.ts": "c534d1db110a222e0ffbc76d7f50dc39b750f51fe071d48c639c8659f7bc1c2c",
+      "frontend/src/components/command-palette/CommandPalette.tsx": "0f35b98a4dffe89fe318375e60699a23d82ed258b4a26b02c59a38c2a34aa0ca",
+      "frontend/src/components/sponsor/SponsorCard.stories.tsx": "8a970a696cd4e7b1d3b76a725989faed33f6dbfbb6cc331fcabea53eda7dbe74",
+      "frontend/src/components/sponsor/SponsorCard.tsx": "ecc04b29d62834dd93f012259f06c0051894e120f7525823dc760d98a600e85c",
+      "frontend/src/components/sponsor/SponsorSlot.tsx": "f60270b7c9fa8f68cab7a8871ac5e987400e367c42ee5e953dd2e94e03eb3340",
+      "frontend/src/generated/examples.ts": "75a5f3cc439503e9dc784fe2ab04d2cd9e36c1b05880f4a8c3f4877cf26594da",
+      "frontend/src/generated/schemas.ts": "fe81934315af8d9d30eb87a9b203aa14c4680cfdf588cd6600ab86496c859dc7",
+      "frontend/src/generated/types.ts": "2ebd3123a3dee510e5eb0692227e963a01bf028b50fe87fe8e2d24f0fb18533d",
+      "frontend/src/generated/zod.ts": "2dd79b3f908f1a5f1a5b8a58db587af15d0067d2eb364d1f41a33f9eeed63136",
+      "frontend/src/hooks/usePageTitle.ts": "442beaf4956c282346f4c9c4457ed1ab337b0501f9c41ef2514d11a58f4e68c5",
+      "frontend/src/layouts/AppSidebar.tsx": "c9e826ad43519293f019221bd17feefd328a230e2437018ff2d3c05418bfd7a9",
+      "frontend/src/lib/sponsors.ts": "002d1d493f4715a529907e83f94729f83c56cbf9fe0fe5df1acb87299c5131ef",
+      "frontend/src/pages/api-docs/endpoints.ts": "4c76be1ecc8866317a3785a30046acc838478445a0e56afd6efb8f531f88b969",
+      "frontend/src/pages/index/IndexPage.tsx": "31e1c99fb2b0b3113cbf29149ec2031c82257047445806ce0734ea1416194539",
+      "frontend/src/pages/login/LoginPage.tsx": "74a177cedd40572232e5576dd12f181b8239bc13d94b201472828b111024bc60",
+      "frontend/src/pages/sponsors/SponsorsPage.tsx": "4e7934f1d94a8da4edf02ee1ff2685fc8db10c41c3322e74d203df5af9f9b8c6",
+      "frontend/src/routes.tsx": "17c1432f8a9754c6086256eedb406a9a1841f7695a24ffab5120f544952ca8a5",
+      "frontend/src/test/sponsors.test.tsx": "6441e14b1b67ff35980c90c8db5dd905bf7e3c9feb915b7cb2ad32e29b7b0fa8",
+      "internal/web/controller/index.go": "ef3ac735136d46f7c420b6dc7939156373a75feb52431d7775cdc8233abbaa3e",
+      "internal/web/service/client_bulk.go": "34e5be74a2624a279c6b434e4eb9313730248cc59dc25998770135689e823ad6",
+      "internal/web/service/panel/sponsor.go": "35ce27992b9b0b753ea9ee58d181b4834d84a51351115360913f17d66f1a30f3"
+    },
+    "bundle": {
+      "xray_version": "26.10.10",
+      "xray_sha256": "4cca4de3ab8c16b3803a70e9ebe0570d2a72480c716d89aa91603ec568bf0f44",
+      "official_archive_sha256": "b647a3e7d6695600bdd18cbfd34959991be09d4b1ad1e05efa790c0cf69ca40d"
     }
   },
   {
@@ -58,8 +87,7 @@
       "internal/web/service/panel/sponsor_test.go": "a7d5f7514d5033dd774985f4da8d5d94d2e07a52820bf9306dd79c245fa6580e",
       "frontend/src/api/queries/useSponsorsQuery.ts": "ecace055bced670727c6584cabd9fe0fa682cd05b34234ff6a297a23af675a0b",
       "frontend/src/components/sponsor/SponsorSlot.tsx": "7cac62e0f7e0e5d067f5870aa22c1da2bb5a0f34a4bb551f17cd71e8629c110d",
-      "frontend/src/pages/sponsors/SponsorsPage.tsx": "88932977cb8585ac40a7a38371f1982c19fadb491b4a94bcf85ef4cc70615c08",
-      "frontend/src/layouts/AppSidebar.tsx": "49d8825288ad94c90821f54b7ca6a1165041c8b3dc6a9a93dcd0a41f0a096c8b"
+      "frontend/src/pages/sponsors/SponsorsPage.tsx": "88932977cb8585ac40a7a38371f1982c19fadb491b4a94bcf85ef4cc70615c08"
     },
     "inventory": [
       "frontend/src/api/queries/useSponsorsQuery.ts",
@@ -99,6 +127,114 @@
       "internal/web/translation/vi-VN.json": "d96c525ac1fa34df374c7c2a52ad270ea37584867f2548837bd29f717d1592e4",
       "internal/web/translation/zh-CN.json": "2ede6ce95745884d9dbb6e178ebf5086b6a7c688a3bcc9d747e65a3fcf49e544",
       "internal/web/translation/zh-TW.json": "c99fd7a41385328faef31e06509ca142e1dd67291bbe828668b30aa90bb3922e"
+    },
+    "layout": "sidebar",
+    "surface": {
+      "frontend/src/api/queries/useSponsorsQuery.ts": "48e723b8c81256301b80fa2e0f18c2fd9b86028b14f909409a2783bbef7dcb91",
+      "frontend/src/api/queryKeys.ts": "c534d1db110a222e0ffbc76d7f50dc39b750f51fe071d48c639c8659f7bc1c2c",
+      "frontend/src/components/command-palette/CommandPalette.tsx": "0f35b98a4dffe89fe318375e60699a23d82ed258b4a26b02c59a38c2a34aa0ca",
+      "frontend/src/components/sponsor/SponsorCard.stories.tsx": "1ed2a7eb81482d95cb56c4cb8f757dc9151b68f65cc6de269eda6cdb61ba047c",
+      "frontend/src/components/sponsor/SponsorCard.tsx": "b96636f6c46af921a5aff3d62080e375603038988d216fdab1d2dba7604f0318",
+      "frontend/src/components/sponsor/SponsorSlot.tsx": "8ba160209f4deff16f6b9967341a1273078dcab90321819b1b9d0a3e2136f913",
+      "frontend/src/generated/examples.ts": "75a5f3cc439503e9dc784fe2ab04d2cd9e36c1b05880f4a8c3f4877cf26594da",
+      "frontend/src/generated/schemas.ts": "fe81934315af8d9d30eb87a9b203aa14c4680cfdf588cd6600ab86496c859dc7",
+      "frontend/src/generated/types.ts": "2ebd3123a3dee510e5eb0692227e963a01bf028b50fe87fe8e2d24f0fb18533d",
+      "frontend/src/generated/zod.ts": "2dd79b3f908f1a5f1a5b8a58db587af15d0067d2eb364d1f41a33f9eeed63136",
+      "frontend/src/hooks/usePageTitle.ts": "442beaf4956c282346f4c9c4457ed1ab337b0501f9c41ef2514d11a58f4e68c5",
+      "frontend/src/layouts/AppSidebar.tsx": "70d85d440cfd651c57621e49d7c3c1e3383c842c1317826fe2c0ed845fc862e6",
+      "frontend/src/lib/sponsors.ts": "46680046ad27d7754408b6946ff750164912a6566cb9938bd8c2ac5a0cefff7c",
+      "frontend/src/pages/api-docs/endpoints.ts": "4c76be1ecc8866317a3785a30046acc838478445a0e56afd6efb8f531f88b969",
+      "frontend/src/pages/index/IndexPage.tsx": "31e1c99fb2b0b3113cbf29149ec2031c82257047445806ce0734ea1416194539",
+      "frontend/src/pages/login/LoginPage.tsx": "74a177cedd40572232e5576dd12f181b8239bc13d94b201472828b111024bc60",
+      "frontend/src/pages/sponsors/SponsorsPage.tsx": "bc72c525c340893dc60a4ef7ece795b3c3b2cc72864f0d2b912bab299a1206d2",
+      "frontend/src/routes.tsx": "17c1432f8a9754c6086256eedb406a9a1841f7695a24ffab5120f544952ca8a5",
+      "frontend/src/test/sponsors.test.tsx": "e0caae6f0d7f92fb59e268f1416cc5ca4ad01095a0d27b9948c34d52afadb359",
+      "internal/web/controller/index.go": "ef3ac735136d46f7c420b6dc7939156373a75feb52431d7775cdc8233abbaa3e",
+      "internal/web/service/client_bulk.go": "34e5be74a2624a279c6b434e4eb9313730248cc59dc25998770135689e823ad6",
+      "internal/web/service/panel/sponsor.go": "7cb0e3ce99a4478d02b5a5e9a31d21253ede3de8f66f0698535ed48193cfc56d"
+    },
+    "bundle": {
+      "xray_version": "26.10.10",
+      "xray_sha256": "4cca4de3ab8c16b3803a70e9ebe0570d2a72480c716d89aa91603ec568bf0f44",
+      "official_archive_sha256": "bfda7921984e7a72555c38d4e861c7a8b67b3686b658608937de99682f1452d0"
+    }
+  },
+  {
+    "version": "v3.11.0",
+    "commit": "c621ba9014a6aa21fd7c9ecf45655e44e24ebf13",
+    "layout": "registry",
+    "files": {
+      "internal/web/service/panel/sponsor.go": "69a09ce2f94773a37bf2a364677e21889b028f964e273d48b28839191b6f8655",
+      "internal/web/service/panel/sponsor_test.go": "a7d5f7514d5033dd774985f4da8d5d94d2e07a52820bf9306dd79c245fa6580e",
+      "frontend/src/api/queries/useSponsorsQuery.ts": "ecace055bced670727c6584cabd9fe0fa682cd05b34234ff6a297a23af675a0b",
+      "frontend/src/components/sponsor/SponsorSlot.tsx": "7cac62e0f7e0e5d067f5870aa22c1da2bb5a0f34a4bb551f17cd71e8629c110d",
+      "frontend/src/pages/sponsors/SponsorsPage.tsx": "25771a91c51ca556b2fcc9cdfc53c76f8530b954416bb94e4353a51ffff1d8ca",
+      "frontend/src/test/navigation-contract.test.tsx": "2c91e697df7ebd331a346fd9bdb7f0bee0d8367abb390ac9ea2cdc64054a7ace"
+    },
+    "inventory": [
+      "frontend/src/api/queries/useSponsorsQuery.ts",
+      "frontend/src/api/queryKeys.ts",
+      "frontend/src/components/command-palette/CommandPalette.tsx",
+      "frontend/src/components/sponsor/SponsorCard.stories.tsx",
+      "frontend/src/components/sponsor/SponsorCard.tsx",
+      "frontend/src/components/sponsor/SponsorSlot.tsx",
+      "frontend/src/generated/examples.ts",
+      "frontend/src/generated/schemas.ts",
+      "frontend/src/generated/types.ts",
+      "frontend/src/generated/zod.ts",
+      "frontend/src/lib/sponsors.ts",
+      "frontend/src/pages/api-docs/endpoints.ts",
+      "frontend/src/pages/index/IndexPage.tsx",
+      "frontend/src/pages/login/LoginPage.tsx",
+      "frontend/src/pages/sponsors/SponsorsPage.tsx",
+      "frontend/src/routes/panelRoutes.tsx",
+      "frontend/src/test/sponsors.test.tsx",
+      "internal/web/controller/index.go",
+      "internal/web/service/client_bulk.go",
+      "internal/web/service/panel/sponsor.go"
+    ],
+    "surface": {
+      "frontend/src/api/queries/useSponsorsQuery.ts": "48e723b8c81256301b80fa2e0f18c2fd9b86028b14f909409a2783bbef7dcb91",
+      "frontend/src/api/queryKeys.ts": "c534d1db110a222e0ffbc76d7f50dc39b750f51fe071d48c639c8659f7bc1c2c",
+      "frontend/src/components/command-palette/CommandPalette.tsx": "9f0878a261260e83c9615dfe891cd0b6a889f50c7722670d58761f7dfc036e17",
+      "frontend/src/components/sponsor/SponsorCard.stories.tsx": "1ed2a7eb81482d95cb56c4cb8f757dc9151b68f65cc6de269eda6cdb61ba047c",
+      "frontend/src/components/sponsor/SponsorCard.tsx": "fe2c60b2c487936a310efc5f37c88a305a3305446a5ee56df83e69f76db4c544",
+      "frontend/src/components/sponsor/SponsorSlot.tsx": "8ba160209f4deff16f6b9967341a1273078dcab90321819b1b9d0a3e2136f913",
+      "frontend/src/generated/examples.ts": "75a5f3cc439503e9dc784fe2ab04d2cd9e36c1b05880f4a8c3f4877cf26594da",
+      "frontend/src/generated/schemas.ts": "fe81934315af8d9d30eb87a9b203aa14c4680cfdf588cd6600ab86496c859dc7",
+      "frontend/src/generated/types.ts": "2ebd3123a3dee510e5eb0692227e963a01bf028b50fe87fe8e2d24f0fb18533d",
+      "frontend/src/generated/zod.ts": "2dd79b3f908f1a5f1a5b8a58db587af15d0067d2eb364d1f41a33f9eeed63136",
+      "frontend/src/lib/sponsors.ts": "46680046ad27d7754408b6946ff750164912a6566cb9938bd8c2ac5a0cefff7c",
+      "frontend/src/pages/api-docs/endpoints.ts": "4c76be1ecc8866317a3785a30046acc838478445a0e56afd6efb8f531f88b969",
+      "frontend/src/pages/index/IndexPage.tsx": "31e1c99fb2b0b3113cbf29149ec2031c82257047445806ce0734ea1416194539",
+      "frontend/src/pages/login/LoginPage.tsx": "74a177cedd40572232e5576dd12f181b8239bc13d94b201472828b111024bc60",
+      "frontend/src/pages/sponsors/SponsorsPage.tsx": "c451107b246ba3dff59bc29df6e20fcdf1ec1299c74a0c210401a5d6061d6b07",
+      "frontend/src/routes/panelRoutes.tsx": "7e2d3bce1fbadbef0b13ede27505af0d9921cbe56f6e2917537c15cff8b7fbcb",
+      "frontend/src/test/sponsors.test.tsx": "e0caae6f0d7f92fb59e268f1416cc5ca4ad01095a0d27b9948c34d52afadb359",
+      "internal/web/controller/index.go": "ef3ac735136d46f7c420b6dc7939156373a75feb52431d7775cdc8233abbaa3e",
+      "internal/web/service/client_bulk.go": "34e5be74a2624a279c6b434e4eb9313730248cc59dc25998770135689e823ad6",
+      "internal/web/service/panel/sponsor.go": "7cb0e3ce99a4478d02b5a5e9a31d21253ede3de8f66f0698535ed48193cfc56d"
+    },
+    "translations": {
+      "internal/web/translation/ar-EG.json": "6a94596af04ba60aca3a4e7da50683336d566728ecd19c3b388a6c59978508cc",
+      "internal/web/translation/en-US.json": "4434619a5756feafa08bcc6e255039ead927549faf6f74c00487c7636d682291",
+      "internal/web/translation/es-ES.json": "7495e9ffaf32711b44a52a88e87658cd4ccaa5b4b0ddba3574cbceb9d506cb22",
+      "internal/web/translation/fa-IR.json": "c3820dab39c76ceb8ac4af6edbb3eb46437fea190cf54e2ede1db2fbb941ba33",
+      "internal/web/translation/id-ID.json": "8b356eb3f1edfea2f9cbfe195d6d04d9b4d038389242c5c8d70e8537e1b65d43",
+      "internal/web/translation/ja-JP.json": "9b466b20ad8a1226e56c59d7c0dbf9717f8ab27f4e7110c5fccd90285a42d3d0",
+      "internal/web/translation/pt-BR.json": "5869e769312182dcc3464444dccec56789f67753d619823f205ea5358dd8fa49",
+      "internal/web/translation/ru-RU.json": "00b9c109c27e7a318d8c1cae2f3b653b6664f2efc86b915e9a38e4e86b97940c",
+      "internal/web/translation/sk-SK.json": "2a3eec9eb818e6abd83c8af3ee25e791ed51bf53fe668fa1a070373a115d8380",
+      "internal/web/translation/tr-TR.json": "24df6f3246d4642ba9f45acc79319603d91c827e4801f60d4ab7723ae2c3e63e",
+      "internal/web/translation/uk-UA.json": "20aa5f477ac3d88409568816cc8cfa6cbb20a14f31c09fc00c290642dd3bb1ce",
+      "internal/web/translation/vi-VN.json": "d96c525ac1fa34df374c7c2a52ad270ea37584867f2548837bd29f717d1592e4",
+      "internal/web/translation/zh-CN.json": "2ede6ce95745884d9dbb6e178ebf5086b6a7c688a3bcc9d747e65a3fcf49e544",
+      "internal/web/translation/zh-TW.json": "c99fd7a41385328faef31e06509ca142e1dd67291bbe828668b30aa90bb3922e"
+    },
+    "bundle": {
+      "xray_version": "26.10.21",
+      "xray_sha256": "a27e3f95ab6ce270956d0cecd32eda4686a811afc71c64a6a734a3dede14883e",
+      "official_archive_sha256": "0ddfa4702f595442e2962acd81addc768fdacaa4ff2672c971a0463dae744916"
     }
   }
 ]

@@ -10,9 +10,11 @@ import sqlite3
 import tarfile
 import tempfile
 import unittest
+import sys
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / 'maintenance'))
 def module(name, path):
     spec = importlib.util.spec_from_file_location(name, path)
     m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m); return m
@@ -183,7 +185,8 @@ class SafetyTests(unittest.TestCase):
         profile['translations'] = {}
         profile['inventory'] = P.inventory(self.d)
         (self.d / 'frontend/src/new-sponsored.ts').write_text('sponsor new entry point')
-        with patch.object(P.json, 'loads', return_value=[profile]):
+        profile['surface'] = P.surface(self.d)
+        with patch.object(P.json, 'loads', return_value=[profile]), patch.object(P.subprocess, 'check_output', return_value=profile['commit']):
             with self.assertRaisesRegex(ValueError, 'Unknown'): P.apply(self.d)
         for f in P.FILES: self.assertEqual((self.d / f).read_text(), 'original sponsor')
 

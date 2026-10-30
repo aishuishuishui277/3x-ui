@@ -1,13 +1,21 @@
 name: No sponsor stable AMD64
 on:
   schedule:
-    - cron: '23 */6 * * *'
+    - cron: '23 2,14 * * *'
   workflow_dispatch:
     inputs:
       upstream_tag:
-        description: '留空追踪最新正式版；也可填 v3.10.0 或 v3.10.2'
+        description: '留空追踪正式版；仅已审核 commit 可构建，包括 v3.11.0'
         type: string
         default: ''
+      publish:
+        description: '在稳定维护分支发布已通过全部测试的候选包'
+        type: boolean
+        default: false
+      validate_existing:
+        description: '重新验证已有构建；不会覆盖已有公开 Release'
+        type: boolean
+        default: false
   push:
     paths: ['maintenance/**', 'tests/**', '.github/workflows/no-sponsor.yml', 'server/**']
 permissions:
@@ -29,43 +37,71 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     outputs:
-      build: ${{ steps.select.outputs.build }}
+      build: ${{ steps.patch.outputs.applied }}
+    env:
+      CGO_ENABLED: '1'
+      GOOS: linux
+      GOARCH: amd64
+      CC: musl-gcc
     steps:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
       - name: Maintenance regression tests
         run: python3 -m unittest discover -s tests -v
+      - uses: actions/cache/restore@v5
+        with:
+          path: .maintenance-state
+          key: panel-observation-${{ github.ref_name }}-${{ github.run_id }}
+          restore-keys: panel-observation-${{ github.ref_name }}-
       - name: Resolve stable release
         id: select
         env:
           GH_TOKEN: ${{ github.token }}
           REQUESTED_TAG: ${{ inputs.upstream_tag }}
+          FORCE_VALIDATE: ${{ inputs.validate_existing }}
         run: python3 maintenance/track.py
       - name: Check and apply reviewed patch
+        id: patch
         if: steps.select.outputs.build == 'true'
         run: python3 maintenance/patch.py upstream
+      - name: Real reviewed-source profile regressions
+        id: profiles
+        if: steps.patch.outputs.applied == 'true'
+        env:
+          XUI_INTEGRATION_SOURCES: upstream
+        run: python3 -m unittest discover -s tests -p test_profiles_integration.py -v
       - uses: actions/setup-go@v7
-        if: steps.select.outputs.build == 'true'
+        if: steps.patch.outputs.applied == 'true'
         with:
           go-version-file: upstream/go.mod
           cache-dependency-path: upstream/go.sum
       - uses: actions/setup-node@v7
-        if: steps.select.outputs.build == 'true'
+        if: steps.patch.outputs.applied == 'true'
         with:
           node-version-file: upstream/.nvmrc
           cache: npm
           cache-dependency-path: upstream/frontend/package-lock.json
-      - name: Frontend install, typecheck and build
-        if: steps.select.outputs.build == 'true'
+      - name: Frontend install
+        id: dependencies
+        if: steps.patch.outputs.applied == 'true'
+        working-directory: upstream/frontend
+        run: npm ci
+      - name: Frontend typecheck and regression tests
+        id: frontend_tests
+        if: steps.patch.outputs.applied == 'true'
         working-directory: upstream/frontend
         run: |
-          npm ci
-          npm run typecheck
-          npm test -- --project unit --project components
-          npm run build
-      - name: Go tests and static Linux AMD64 build
-        if: steps.select.outputs.build == 'true'
+          python3 ../../maintenance/check.py frontend_typecheck -- npm run typecheck
+          python3 ../../maintenance/check.py frontend_unit_and_components -- npm test -- --project unit --project components
+      - name: Frontend production build
+        id: frontend_build
+        if: steps.patch.outputs.applied == 'true'
+        working-directory: upstream/frontend
+        run: python3 ../../maintenance/check.py frontend_build -- npm run build
+      - name: Go verification and tests
+        id: go_tests
+        if: steps.patch.outputs.applied == 'true'
         working-directory: upstream
         env:
           CGO_ENABLED: '1'
@@ -77,22 +113,35 @@ jobs:
           sudo apt-get install -y musl-tools
           go mod verify
           gofmt -w internal/web/service/panel/sponsor.go internal/web/service/panel/no_sponsor_test.go
-          go test -timeout 15m ./...
-          go build -trimpath -buildvcs=false -ldflags "-w -s -linkmode external -extldflags '-static'" -o ../panel .
+          python3 ../maintenance/check.py go_tests -- go test -timeout 15m ./...
+      - name: Static Linux AMD64 build
+        id: compile
+        if: steps.patch.outputs.applied == 'true'
+        working-directory: upstream
+        run: |
+          python3 ../maintenance/check.py static_amd64 -- go build -trimpath -buildvcs=false -ldflags "-w -s -linkmode external -extldflags '-static'" -o ../panel .
           file ../panel | tee ../binary-info.txt
           readelf -h ../panel | grep 'Advanced Micro Devices X86-64'
           if readelf -l ../panel | grep -q INTERP; then echo 'Unexpected dynamic loader'; exit 1; fi
           test "v$(../panel -v)" = "${{ steps.select.outputs.tag }}"
       - name: Package verified binary and official pinned Xray
-        if: steps.select.outputs.build == 'true'
+        id: package
+        if: steps.patch.outputs.applied == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: python3 maintenance/package.py
       - name: Isolated panel HTTP smoke test
-        if: steps.select.outputs.build == 'true'
+        id: smoke
+        if: steps.patch.outputs.applied == 'true'
         run: python3 maintenance/smoke.py
+      - name: Verify complete release roster and manifest
+        if: steps.patch.outputs.applied == 'true'
+        run: |
+          python3 maintenance/verify_release.py panel dist
+          python3 maintenance/status.py VALIDATED
+          cp attempt.json dist/attempt.json
       - name: Export build artifacts
-        if: steps.select.outputs.build == 'true'
+        if: steps.patch.outputs.applied == 'true'
         uses: actions/upload-artifact@v7
         with:
           name: no-sponsor-${{ steps.select.outputs.tag }}-amd64
@@ -103,13 +152,37 @@ jobs:
         if: failure()
         run: |
           echo '### 构建停止，未发布可安装 Release。请查看失败步骤；补丁指纹改变时需要重新审查源码。' >> "$GITHUB_STEP_SUMMARY"
+      - name: Record distinct failure state
+        if: failure()
+        env:
+          TEST_FAILURE: ${{ steps.profiles.conclusion == 'failure' || steps.frontend_tests.conclusion == 'failure' || steps.go_tests.conclusion == 'failure' || steps.smoke.conclusion == 'failure' }}
+        run: |
+          if [ "$TEST_FAILURE" = true ]; then python3 maintenance/status.py TEST_FAILED; else python3 maintenance/status.py BUILD_FAILED; fi
+      - uses: actions/cache/save@v5
+        if: always()
+        with:
+          path: .maintenance-state
+          key: panel-observation-${{ github.ref_name }}-${{ github.run_id }}
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: panel-maintenance-observation
+          path: |
+            maintenance-status.json
+            review-required.json
+            upstream/no-sponsor-patch-report.json
+          if-no-files-found: ignore
+          retention-days: 30
   publish:
     needs: build
-    if: needs.build.outputs.build == 'true'
+    if: needs.build.outputs.build == 'true' && github.ref_name == 'maintenance-no-sponsor' && (github.event_name == 'schedule' || inputs.publish == true)
     runs-on: ubuntu-24.04
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - uses: actions/download-artifact@v8
         id: download
         with:
@@ -123,6 +196,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          cp dist/attempt.json attempt.json
+          python3 maintenance/verify_release.py panel dist
           cd dist
           sha256sum -c SHA256SUMS
           tag=$(python3 -c 'import json; print(json.load(open("manifest.json"))["release_tag"])')
@@ -133,5 +208,17 @@ jobs:
             gh release create "$tag" --draft --target "$GITHUB_SHA" --title "$tag · Linux AMD64 · no sponsor" --notes-file RELEASE-NOTES.md
           fi
           gh release upload "$tag" x-ui-panel-linux-amd64.tar.gz source-patched.tar.gz manifest.json SHA256SUMS patch-report.json validation.json --clobber
+          gh api "repos/$GH_REPO/releases/tags/$tag" > uploaded-release.json
+          python3 ../maintenance/verify_release.py panel . --remote-json uploaded-release.json
           gh release edit "$tag" --draft=false --latest=false
+          gh release view "$tag" --json isDraft,assets --jq 'if (.isDraft == false and (.assets | length) == 6) then "PUBLISHED" else error("Incomplete publication") end'
           echo "### 已发布 $tag；VPS 仍需手工批准更新。" >> "$GITHUB_STEP_SUMMARY"
+          printf '{"status":"PUBLISHED","release_tag":"%s"}\n' "$tag" > publication-status.json
+      - name: Preserve publication failure without hiding it
+        if: failure()
+        run: python3 maintenance/status.py BUILD_FAILED
+      - uses: actions/cache/save@v5
+        if: failure()
+        with:
+          path: .maintenance-state
+          key: panel-observation-${{ github.ref_name }}-${{ github.run_id }}-publication

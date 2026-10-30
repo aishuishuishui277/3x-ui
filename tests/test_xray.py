@@ -9,9 +9,11 @@ import sqlite3
 import tarfile
 import tempfile
 import unittest
+import sys
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / 'maintenance'))
 def module(name, path):
     spec = importlib.util.spec_from_file_location(name, path)
     m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m); return m
@@ -22,14 +24,14 @@ class CoreTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory(); self.d = Path(self.tmp.name)
     def tearDown(self): self.tmp.cleanup()
-    def test_release_channels_do_not_downgrade_baseline(self):
+    def test_release_channels_respect_minimum_candidate_version(self):
         releases = [dict(tag_name='v26.3.27', draft=False, prerelease=False),
-                    dict(tag_name='v26.10.17', draft=False, prerelease=True),
+                    dict(tag_name='v26.10.29', draft=False, prerelease=True),
                     dict(tag_name='dev-latest', draft=False, prerelease=False)]
         self.assertIsNone(R.choose(releases, 'stable'))
-        self.assertEqual(R.choose(releases, 'preview')['tag_name'], 'v26.10.17')
-        releases.append(dict(tag_name='v26.10.20', draft=False, prerelease=False))
-        self.assertEqual(R.choose(releases, 'stable')['tag_name'], 'v26.10.20')
+        self.assertEqual(R.choose(releases, 'preview')['tag_name'], 'v26.10.29')
+        releases.append(dict(tag_name='v26.10.30', draft=False, prerelease=False))
+        self.assertEqual(R.choose(releases, 'stable')['tag_name'], 'v26.10.30')
     def test_actual_official_digest_format_and_duplicates(self):
         h = 'a' * 64
         self.assertEqual(R.digest('MD5= xx\r\nSHA2-256= ' + h + '\r\nSHA2-512= xx\r\n'), h)
