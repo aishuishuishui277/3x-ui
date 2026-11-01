@@ -208,7 +208,8 @@ jobs:
             gh release create "$tag" --draft --target "$GITHUB_SHA" --title "$tag · Linux AMD64 · no sponsor" --notes-file RELEASE-NOTES.md
           fi
           gh release upload "$tag" x-ui-panel-linux-amd64.tar.gz source-patched.tar.gz manifest.json SHA256SUMS patch-report.json validation.json --clobber
-          gh api "repos/$GH_REPO/releases/tags/$tag" > uploaded-release.json
+          release_id=$(gh release view "$tag" --json databaseId -q .databaseId)
+          gh api "repos/$GH_REPO/releases/$release_id" > uploaded-release.json
           python3 ../maintenance/verify_release.py panel . --remote-json uploaded-release.json
           gh release edit "$tag" --draft=false --latest=false
           gh release view "$tag" --json isDraft,assets --jq 'if (.isDraft == false and (.assets | length) == 6) then "PUBLISHED" else error("Incomplete publication") end'

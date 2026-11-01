@@ -138,7 +138,8 @@ jobs:
                 gh release create "$tag" --draft --target "$GITHUB_SHA" --prerelease="$preview" --title "$tag · official Xray AMD64" --notes-file notes.md
               fi
               gh release upload "$tag" xray-linux-amd64.tar.gz xray-manifest.json xray-validation.json XRAY-SHA256SUMS --clobber
-              gh api "repos/$GH_REPO/releases/tags/$tag" > uploaded-release.json
+              release_id=$(gh release view "$tag" --json databaseId -q .databaseId)
+              gh api "repos/$GH_REPO/releases/$release_id" > uploaded-release.json
               python3 "$verifier" core . --remote-json uploaded-release.json
               gh release edit "$tag" --draft=false --latest=false --prerelease="$preview"
               gh release view "$tag" --json isDraft,assets --jq 'if (.isDraft == false and (.assets | length) == 4) then "PUBLISHED" else error("Incomplete publication") end'
